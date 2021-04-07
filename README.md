@@ -31,3 +31,13 @@ func parseRecipe(_ content: String) -> SemanticRecipe {
     return analyzer.analyze(node: node)
 }
 ```
+
+#### Config parser
+Creating Swift datastructures from the string containing cook config:
+
+```  swift
+func parseConfig(_ content: String) -> CookConfig {
+    let parser = ConfigParser(textConfig)
+    return parser.parse()
+}
+```
