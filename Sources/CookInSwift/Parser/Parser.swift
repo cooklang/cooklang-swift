@@ -308,13 +308,28 @@ public class Parser {
 
      */
     private func metadataKey() -> String {
-        guard case let .constant(.string(key)) = currentToken else {
-            fatalError("String expected")
+        var keyParts: [String] = []
+
+        while true {
+
+            switch currentToken {
+
+            case let .constant(.string(value)):
+                keyParts.append(value)
+                eat(.constant(.string(value)))
+
+//                TODO support other types like numbers
+
+            case .colon:
+                return keyParts.joined()
+
+            default:
+                fatalError("Number or word is expected, got \(currentToken)")
+
+            }
         }
 
-        eat(.constant(.string(key)))
-
-        return key
+        return keyParts.joined()
     }
 
     /**

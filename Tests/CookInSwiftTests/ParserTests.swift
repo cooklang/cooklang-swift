@@ -523,6 +523,17 @@ class ParserTests: XCTestCase {
         
         XCTAssertEqual(result.printTree(), node.printTree())
     }
+
+    func testMetadataMultiwordKey() {
+        let recipe = ">> cooking time: 30 mins"
+
+        let parser = Parser(recipe)
+        let result = parser.parse() as! RecipeNode
+
+        let node = RecipeNode(steps: [], metadata: [MetadataNode("cooking time", "30 mins")])
+
+        XCTAssertEqual(result, node)
+    }
     
     func testServings() {
         let recipe = ">> servings: 1|2|3"
