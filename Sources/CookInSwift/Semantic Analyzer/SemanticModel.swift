@@ -8,6 +8,9 @@
 
 import Foundation
 
+public protocol DirectionItem {
+    var description: String { get }
+}
 
 public class SemanticRecipe: Identifiable {
     public let id = UUID()
@@ -29,24 +32,50 @@ public class SemanticRecipe: Identifiable {
 public class SemanticStep: Identifiable {
     public let id = UUID()
     public var ingredientsTable: IngredientTable = IngredientTable()
-    public var directions: String = ""
+    public var directions: [DirectionItem] = []
     public var timers: [ParsedTimer] = []
-
-    func addDirections(_ text: String) {
-        directions = text
-    }
+    public var equipments: [ParsedEquipment] = []
 
     func addIngredient(_ ingredient: IngredientNode) {
-        ingredientsTable.add(ingredient)
+        let name = ingredient.name
+        let amount = IngredientAmount(ingredient.amount.quantity, ingredient.amount.units)
+        let ingredient = ParsedIngredient(name, amount)
+
+        ingredientsTable.add(name: name, amount: amount)
+        directions.append(ingredient)
     }
 
     func addTimer(_ timer: TimerNode) {
-        timers.append(ParsedTimer(timer.quantity, timer.units))
+        let timer = ParsedTimer(timer.quantity, timer.units)
+
+        timers.append(timer)
+        directions.append(timer)
     }
 
+    func addText(_ direction: DirectionNode) {
+        let text = TextItem(direction.value.description)
+
+        directions.append(text)
+    }
+
+    func addEquipment(_ equipment: EquipmentNode) {
+        let equipment = ParsedEquipment(equipment.name)
+
+        equipments.append(equipment)
+        directions.append(equipment)
+    }
+}
+
+public class TextItem: DirectionItem {
+    public var value: String
+
+    init(_ value: String) {
+        self.value = value
+    }
 }
 
 public class IngredientAmount {
+//    TODO remove refs to internal ValuesNode
     public var quantity: ValuesNode
     public var units: String
 
@@ -61,7 +90,18 @@ public class IngredientAmount {
     }
 }
 
-public class ParsedEquipment {
+public class ParsedIngredient: DirectionItem {
+    public var name: String
+    public var amount: IngredientAmount
+
+    init(_ name: String, _ amount: IngredientAmount) {
+        self.name = name
+        self.amount = amount
+    }
+}
+
+
+public class ParsedEquipment: DirectionItem {
     public var name: String
 
     init(_ name: String) {
@@ -69,7 +109,8 @@ public class ParsedEquipment {
     }
 }
 
-public class ParsedTimer {
+public class ParsedTimer: DirectionItem {
+//    TODO remove refs to internal ValuesNode
     public var quantity: ValuesNode
     public var units: String
 
@@ -121,12 +162,5 @@ public class IngredientTable {
             add(name: name, amount: $0)
         }
     }
-
-    func add(_ ingredient: IngredientNode) {
-        let amount = IngredientAmount(ingredient.amount.quantity, ingredient.amount.units)
-
-        add(name: ingredient.name, amount: amount)
-    }
-
 }
 

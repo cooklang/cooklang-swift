@@ -47,6 +47,12 @@ public extension IngredientTable {
     }
 }
 
+extension TextItem: CustomStringConvertible {
+    public var description: String {
+        return value
+    }
+}
+
 extension IngredientAmount: CustomStringConvertible {
     public var description: String {
         if let v = Int(quantity.value) {
@@ -64,6 +70,13 @@ extension ParsedTimer: CustomStringConvertible {
         } else {
             return "\(quantity.value) \(units.pluralize(2))"
         }
+    }
+}
+
+
+extension ParsedIngredient: CustomStringConvertible {
+    public var description: String {
+       return name
     }
 }
 

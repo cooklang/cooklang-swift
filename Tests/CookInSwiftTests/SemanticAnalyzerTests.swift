@@ -23,8 +23,11 @@ class SemanticAnalyzerTests: XCTestCase {
         let analyzer = SemanticAnalyzer()
         let recipe = analyzer.analyze(node: node)
             
-        
-        XCTAssertEqual(recipe.steps.map{ $0.directions }, ["Add chilli, ginger and milk place in oven and cook for 10 minutes"])
+        let text = recipe.steps.map{ step in
+            step.directions.map { $0.description }.joined()
+        }
+
+        XCTAssertEqual(text, ["Add chilli, ginger and milk place in oven and cook for 10 minutes"])
     }
     
 //    test valid ingridient: when only units, but no name of in
