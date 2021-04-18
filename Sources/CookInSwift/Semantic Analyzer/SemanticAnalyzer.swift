@@ -10,7 +10,7 @@ import Foundation
 
 public class SemanticAnalyzer: Visitor {
     private var currentStep: SemanticStep = SemanticStep()
-    private var recipe: SemanticRecipe = SemanticRecipe()
+    private var currentRecipe: SemanticRecipe = SemanticRecipe()
 
     public init() {
     }
@@ -18,7 +18,7 @@ public class SemanticAnalyzer: Visitor {
     public func analyze(node: AST) -> SemanticRecipe {
         visit(node: node)
         
-        return recipe
+        return currentRecipe
     }
     
     func visit(direction: DirectionNode) {
@@ -30,7 +30,7 @@ public class SemanticAnalyzer: Visitor {
     }
     
     func visit(equipment: EquipmentNode) {
-        recipe.addEquipment(equipment)
+        currentRecipe.addEquipment(equipment)
         currentStep.addEquipment(equipment)
     }
     
@@ -39,10 +39,12 @@ public class SemanticAnalyzer: Visitor {
     }
 
     func visit(recipe: RecipeNode) {
+        currentRecipe.addMetadata(recipe.metadata)
+
         for step in recipe.steps {
             visit(step: step)
 
-            self.recipe.addStep(currentStep)
+            currentRecipe.addStep(currentStep)
             currentStep = SemanticStep()
         }
     }

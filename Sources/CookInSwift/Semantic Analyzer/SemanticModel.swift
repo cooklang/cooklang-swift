@@ -8,15 +8,12 @@
 
 import Foundation
 
-public protocol DirectionItem {
-    var description: String { get }
-}
-
 public class SemanticRecipe: Identifiable {
     public let id = UUID()
     public var ingredientsTable: IngredientTable = IngredientTable()
     public var steps: [SemanticStep] = []
     public var equipment: [ParsedEquipment] = []
+    public var metadata: [String: String] = [:]
 
     func addStep(_ step: SemanticStep) {
         steps.append(step)
@@ -25,6 +22,13 @@ public class SemanticRecipe: Identifiable {
 
     func addEquipment(_ e: EquipmentNode) {
         equipment.append(ParsedEquipment(e.name))
+    }
+
+    func addMetadata(_ m: [MetadataNode]) {
+        // TODO
+        m.forEach{ item in
+            metadata[item.key] = item.value.description
+        }
     }
 
 }
@@ -74,21 +78,6 @@ public class TextItem: DirectionItem {
     }
 }
 
-public class IngredientAmount {
-//    TODO remove refs to internal ValuesNode
-    public var quantity: ValuesNode
-    public var units: String
-
-    init(_ quantity: ValuesNode, _ units: String) {
-        self.quantity = quantity
-        self.units = units
-    }
-
-    init(_ quantity: ConstantNode, _ units: String) {
-        self.quantity = ValuesNode(quantity)
-        self.units = units
-    }
-}
 
 public class ParsedIngredient: DirectionItem {
     public var name: String
@@ -99,7 +88,6 @@ public class ParsedIngredient: DirectionItem {
         self.amount = amount
     }
 }
-
 
 public class ParsedEquipment: DirectionItem {
     public var name: String
@@ -118,49 +106,24 @@ public class ParsedTimer: DirectionItem {
         self.quantity = quantity
         self.units = units
     }
-}
 
-public class IngredientAmountCollection {
-    var amountsCountable: [String: Float] = [:]
-    var amountsUncountable: [String: String] = [:]
+//    TODO figure out how to make it DRY
+    init(_ quantity: Int, _ units: String) {
+        self.quantity = ValuesNode(quantity)
+        self.units = units
+    }
 
-    func add(_ amount: IngredientAmount) {
-        let units = amount.units.singularize
+    init(_ quantity: String, _ units: String) {
+        self.quantity = ValuesNode(quantity)
+        self.units = units
+    }
 
-//        TODO
-        switch amount.quantity.values.first {
-        case let .integer(value):
-            amountsCountable[units] = amountsCountable[units, default: 0] + Float(value)
-        case let .decimal(value):
-            amountsCountable[units] = Float(amountsCountable[units, default: 0]) + value
-        case let .fractional(value):
-            amountsCountable[units] = amountsCountable[units, default: 0] + Float(value.0)/Float(value.1)
-        case let .string(value):
-            amountsUncountable[amount.units] = value
-        case .none:
-            fatalError("Shite!")
-        }
+    init(_ quantity: Float, _ units: String) {
+        self.quantity = ValuesNode(quantity)
+        self.units = units
     }
 }
 
-public class IngredientTable {
-    public var ingredients: [String: IngredientAmountCollection] = [:]
-
-    public init() {
-    }
-
-    func add(name: String, amount: IngredientAmount) {
-        if ingredients[name] == nil {
-            ingredients[name] = IngredientAmountCollection()
-        }
-
-        ingredients[name]?.add(amount)
-    }
-
-    func add(name: String, amounts: IngredientAmountCollection) {
-        amounts.forEach {
-            add(name: name, amount: $0)
-        }
-    }
+public protocol DirectionItem {
+    var description: String { get }
 }
-

@@ -28,6 +28,22 @@ public class ValuesNode: AST {
         values = [value]
     }
 
+    init(_ value: String) {
+        values = [ConstantNode(value)]
+    }
+
+    init(_ value: Int) {
+        values = [ConstantNode(value)]
+    }
+
+    init(_ value: Float) {
+        values = [ConstantNode(value)]
+    }
+
+    init(_ value: (Int, Int)) {
+        values = [ConstantNode(value)]
+    }
+
     func add(_ value: ConstantNode) {
         values.append(value)
     }

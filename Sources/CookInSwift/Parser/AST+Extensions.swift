@@ -14,6 +14,26 @@ extension Float {
     }
 }
 
+
+extension ConstantNode {
+    init(_ value: Int) {
+        self = .integer(value)
+    }
+
+    init(_ value: Float) {
+        self = .decimal(value)
+    }
+
+    init(_ value: (Int, Int)) {
+        self = .fractional(value)
+    }
+
+    init(_ value: String) {
+        self = .string(value)
+    }
+}
+
+
 extension ConstantNode: CustomStringConvertible {
     public var description: String {
         switch self {

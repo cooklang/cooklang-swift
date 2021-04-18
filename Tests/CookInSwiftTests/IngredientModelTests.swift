@@ -1,5 +1,5 @@
 //
-//  SemanticModelTests.swift
+//  IngredientModelTests.swift
 //  CookInSwiftTests
 //
 //  Created by Alexey Dubovskoy on 16/02/2021.
@@ -11,7 +11,22 @@ import Foundation
 @testable import CookInSwift
 import XCTest
 
-class SemanticModelTests: XCTestCase {
+class IngredientModelTests: XCTestCase {
+
+    func testIngredientTableAddition() {
+        let table1 = IngredientTable()
+
+        table1.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(3), "items"))
+        table1.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(1), "medium"))
+
+        let table2 = IngredientTable()
+
+        table2.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(5), "items"))
+        table1.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(3), "small"))
+
+        XCTAssertEqual((table1 + table2).description, "chilli: 8 items, 1 medium, 3 small")
+    }
+
     func testSameUnitsAndType() {
         let collection = IngredientAmountCollection()
         
@@ -64,14 +79,14 @@ class SemanticModelTests: XCTestCase {
         XCTAssertEqual(collection.description, "3 cups")
     }
     
-//    func testWithPluralAndSingularIngredient() {
-//        var collection = IngredientAmountCollection()
-//
-//        collection.add(IngredientAmount(ConstantNode.integer(1), "onion"))
-//        collection.add(IngredientAmount(ConstantNode.integer(2), "onions"))
-//
-//        XCTAssertEqual(collection.description, "3 onions")
-//    }
+    func testWithPluralAndSingularIngredient() {
+        let collection = IngredientAmountCollection()
+
+        collection.add(IngredientAmount(ConstantNode.integer(1), "onion"))
+        collection.add(IngredientAmount(ConstantNode.integer(2), "onions"))
+
+        XCTAssertEqual(collection.description, "3 onions")
+    }
     
     func testWithTextQuantity() {
         let collection = IngredientAmountCollection()
@@ -80,7 +95,7 @@ class SemanticModelTests: XCTestCase {
         
         XCTAssertEqual(collection.description, "few springs")
     }
-        
+
     
 //    test valid ingridient: when only units, but no name of in
 
