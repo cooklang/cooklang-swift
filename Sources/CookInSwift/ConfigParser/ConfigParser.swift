@@ -10,8 +10,8 @@ import Foundation
 
 public class CookConfig {
 
-    var sections: [String: [String]] = [:]
-    var items: [String: String] = [:]
+    public var sections: [String: [String]] = [:]
+    public var items: [String: String] = [:]
 
     func add(item: String, section: String) {
         items[item] = section
