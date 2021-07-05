@@ -59,7 +59,7 @@ public class IngredientTable {
     public init() {
     }
 
-    func add(name: String, amount: IngredientAmount) {
+    public func add(name: String, amount: IngredientAmount) {
         if ingredients[name] == nil {
             ingredients[name] = IngredientAmountCollection()
         }
@@ -67,7 +67,7 @@ public class IngredientTable {
         ingredients[name]?.add(amount)
     }
 
-    func add(name: String, amounts: IngredientAmountCollection) {
+    public func add(name: String, amounts: IngredientAmountCollection) {
         amounts.forEach {
             add(name: name, amount: $0)
         }
