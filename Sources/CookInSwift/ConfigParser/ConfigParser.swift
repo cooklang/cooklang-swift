@@ -13,7 +13,7 @@ public class CookConfig {
     public var sections: [String: [String]] = [:]
     public var items: [String: String] = [:]
 
-    func add(item: String, section: String) {
+    public func add(item: String, section: String) {
         items[item] = section
 
         if sections[section] == nil {
