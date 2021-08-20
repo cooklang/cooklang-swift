@@ -159,6 +159,23 @@ class ParserTests: XCTestCase {
         
         XCTAssertEqual(result, node)
     }
+
+    func testIngridentNoUnitsNotOnlyString() {
+        let recipe =
+            """
+            @5peppers
+            """
+
+        let parser = Parser(recipe)
+        let result = parser.parse() as! RecipeNode
+
+        let steps = [
+            StepNode(instructions: [IngredientNode(name: "5peppers", amount: AmountNode(quantity: ConstantNode.integer(1), units: "item"))])
+        ]
+        let node = RecipeNode(steps: steps)
+
+        XCTAssertEqual(result, node)
+    }
     
     func testIngridentWithNumbers() {
         let recipe =

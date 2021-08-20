@@ -79,12 +79,23 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
 
-    func testStringWithLikeNumbers() {
+    func testStringWithLeadingZeroNumbers() {
         let input = "abc 0777 xyz"
         let lexer = Lexer(input)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("0777")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testStringWithLikeNumbers() {
+        let input = "abc 7peppers xyz"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("7peppers")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
         XCTAssertEqual(lexer.getNextToken(), .eof)

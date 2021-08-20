@@ -14,7 +14,7 @@ import Foundation
 public class Lexer {
 
     // MARK: - Fields
-
+    private let onlyLetters = CharacterSet.letters.subtracting(CharacterSet.nonBaseCharacters)
     private let text: String
     private var currentPosition: Int
     private var currentCharacter: Character?
@@ -108,6 +108,16 @@ public class Lexer {
             }
 
             return .constant(.decimal(Float(lexem)!))
+        }
+
+        // case for "56peppers": we consider it string
+        if let character = currentCharacter, onlyLetters.contains(character.unicodeScalars.first!) {
+            while let character = currentCharacter, CharacterSet.alphanumerics.contains(character.unicodeScalars.first!) {
+                lexem += String(character)
+                advance()
+            }
+
+            return .constant(.string(lexem))
         }
 
         if lexem.count > 1 && lexem.first! == "0" {
