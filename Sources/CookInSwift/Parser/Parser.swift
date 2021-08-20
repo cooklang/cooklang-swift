@@ -8,6 +8,11 @@
 
 import Foundation
 
+enum TaggedParseStrategy {
+    case oneWord
+    case multiWord
+}
+
 public class Parser {
 
     // MARK: - Fields
@@ -157,21 +162,6 @@ public class Parser {
     /**
 
      */
-    private func units() -> String {
-        ignoreWhitespace()
-
-        guard case let .constant(.string(u)) = currentToken else {
-            fatalError("Units expected, got \(currentToken)")
-        }
-
-        eat(.constant(.string(u)))
-
-        return u.trimmingCharacters(in: CharacterSet.whitespaces)
-    }
-
-    /**
-
-     */
     private func amount() -> AmountNode {
         eat(.braces(.left))
         ignoreWhitespace()
@@ -179,18 +169,17 @@ public class Parser {
         let q = values()
         ignoreWhitespace()
 
-        var u = "item"
+        var units = "items"
 
         if currentToken == .percent {
             eat(.percent)
 
-            u = units()
+            units = stringUntilTerminator(terminators: [.braces(.right)])
         }
 
-        ignoreWhitespace()
         eat(.braces(.right))
 
-        return AmountNode(quantity: q, units: u)
+        return AmountNode(quantity: q, units: units)
     }
 
     /**
@@ -201,14 +190,16 @@ public class Parser {
 
         while true {
             if terminators.contains(currentToken) {
-                return parts.joined()
+                break
+            } else if currentToken == .eol || currentToken == .eof {
+                fatalError("Unexpectd end of line or endo of file")
             } else {
                 parts.append(currentToken.literal)
                 eat(currentToken)
             }
         }
 
-        return parts.joined()
+        return parts.joined().trimmingCharacters(in: CharacterSet.whitespaces)
     }
 
     /**
@@ -216,17 +207,17 @@ public class Parser {
      */
     private func taggedName() -> String {
         var i = tokenIndex + 1
-        var strategy: String = ""
+        var strategy: TaggedParseStrategy?
 
         // need to look ahead to define if we need to wait for braces or not
         while i < tokens.count {
             if tokens[i] == .braces(.left) {
-                strategy = "until_braces"
+                strategy = .multiWord
                 break
             }
 
             if tokens[i] == .eof || tokens[i] == .eol || tokens[i] == .at || tokens[i] == .hash || tokens[i] == .tilde {
-                strategy = "one_word"
+                strategy = .oneWord
                 break
             }
 
@@ -234,9 +225,9 @@ public class Parser {
         }
 
         switch strategy {
-        case "until_braces":
+        case .multiWord:
             return stringUntilTerminator(terminators: [.braces(.left)])
-        case "one_word":
+        case .oneWord:
             guard case let .constant(.string(value)) = currentToken else {
                 fatalError("String expected, got \(currentToken)")
             }
@@ -245,7 +236,7 @@ public class Parser {
 
             return value
         default:
-            fatalError("Unexpected strategy \(strategy)")
+            fatalError("Can't understand strategy")
         }
     }
 
@@ -275,6 +266,7 @@ public class Parser {
 
         if currentToken == .braces(.left) {
             eat(.braces(.left))
+            ignoreWhitespace()
             eat(.braces(.right))
         }
 
@@ -288,12 +280,12 @@ public class Parser {
         eat(.tilde)
 //        TODO eat name
         eat(.braces(.left))
-        let q = values()
+        let quantity = values()
         eat(.percent)
-        let u = units()
+        let units = stringUntilTerminator(terminators: [.braces(.right)])
         eat(.braces(.right))
 
-        return TimerNode(quantity: q, units: u)
+        return TimerNode(quantity: quantity, units: units)
     }
 
     /**
@@ -303,19 +295,13 @@ public class Parser {
         eat(.chevron)
         eat(.chevron)
 
-        ignoreWhitespace()
+        let key = stringUntilTerminator(terminators: [.colon])
 
-        let k = stringUntilTerminator(terminators: [.colon])
+        eat(.colon)        
 
-        ignoreWhitespace()
+        let value = stringUntilTerminator(terminators: [.eol, .eof])
 
-        eat(.colon)
-
-        ignoreWhitespace()
-
-        let v = stringUntilTerminator(terminators: [.eol, .eof])
-
-        return MetadataNode(k, v)
+        return MetadataNode(key, value)
     }
 
     /**
@@ -344,7 +330,6 @@ public class Parser {
                 instructions.append(direction())
             default:
                 fatalError("Illigal instruction \(currentToken)")
-
             }
         }
     }
