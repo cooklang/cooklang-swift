@@ -8,6 +8,10 @@
 
 import Foundation
 
+protocol Literal {
+    var literal: String { get }
+}
+
 extension Token: Equatable {
     public static func == (lhs: Token, rhs: Token) -> Bool {
         switch (lhs, rhs) {
@@ -52,6 +56,67 @@ extension Constant: Equatable {
             return left == right
         default:
             return false
+        }
+    }
+}
+
+extension Token: Literal {
+    public var literal: String {
+        get {
+            switch self {
+            case .at:
+                return "@"
+            case .eof:
+                return ""
+            case .eol:
+                return ""
+            case .percent:
+                return "%"
+            case .slash:
+                return "/"
+            case .hash:
+                return "#"
+            case .tilde:
+                return "~"
+            case .chevron:
+                return ">"
+            case .colon:
+                return ":"
+            case .pipe:
+                return "|"
+            case let .braces(braces):
+                return braces.literal
+            case let .constant(constant):
+                return constant.literal
+            }
+        }
+    }
+}
+
+extension Braces: Literal {
+    public var literal: String {
+        get {
+            switch self {
+            case .left:
+                return "{"
+            case .right:
+                return "}"
+            }
+        }
+    }
+}
+
+extension Constant: Literal {
+    public var literal: String {
+        get {
+            switch self {
+            case let .integer(value):
+                return String(value)
+            case let .decimal(value):
+                return String(value)
+            case let .string(value):
+                return value
+            }
         }
     }
 }

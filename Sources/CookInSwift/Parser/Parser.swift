@@ -196,6 +196,24 @@ public class Parser {
     /**
 
      */
+    private func stringUntilTerminator(terminators: [Token]) -> String {
+        var parts: [String] = []
+
+        while true {
+            if terminators.contains(currentToken) {
+                return parts.joined()
+            } else {
+                parts.append(currentToken.literal)
+                eat(currentToken)
+            }
+        }
+
+        return parts.joined()
+    }
+
+    /**
+
+     */
     private func taggedName() -> String {
         var i = tokenIndex + 1
         var strategy: String = ""
@@ -217,31 +235,7 @@ public class Parser {
 
         switch strategy {
         case "until_braces":
-            var items: [String] = []
-
-            while true {
-                switch currentToken {
-                case let .constant(.string(value)):
-                    eat(.constant(.string(value)))
-                    items.append(value)
-                case let .constant(.integer(value)):
-                    eat(.constant(.integer(value)))
-                    items.append(String(value))
-                case let .constant(.decimal(value)):
-                    eat(.constant(.decimal(value)))
-                    items.append(String(value))
-                case .colon:
-                    eat(.colon)
-                    items.append(":")
-                case .slash:
-                    eat(.slash)
-                    items.append("/")
-                case  .braces(.left):
-                    return items.joined()
-                default:
-                    fatalError("Can't understand \(currentToken)")
-                }
-            }
+            return stringUntilTerminator(terminators: [.braces(.left)])
         case "one_word":
             guard case let .constant(.string(value)) = currentToken else {
                 fatalError("String expected, got \(currentToken)")
@@ -253,8 +247,6 @@ public class Parser {
         default:
             fatalError("Unexpected strategy \(strategy)")
         }
-
-
     }
 
     /**
@@ -294,7 +286,7 @@ public class Parser {
      */
     private func timer() -> TimerNode {
         eat(.tilde)
-
+//        TODO eat name
         eat(.braces(.left))
         let q = values()
         eat(.percent)
@@ -307,41 +299,13 @@ public class Parser {
     /**
 
      */
-    private func metadataKey() -> String {
-        var keyParts: [String] = []
-
-        while true {
-
-            switch currentToken {
-
-            case let .constant(.string(value)):
-                keyParts.append(value)
-                eat(.constant(.string(value)))
-
-//                TODO support other types like numbers
-
-            case .colon:
-                return keyParts.joined()
-
-            default:
-                fatalError("Number or word is expected, got \(currentToken)")
-
-            }
-        }
-
-        return keyParts.joined()
-    }
-
-    /**
-
-     */
     private func metadata() -> MetadataNode {
         eat(.chevron)
         eat(.chevron)
 
         ignoreWhitespace()
 
-        let k = metadataKey()
+        let k = stringUntilTerminator(terminators: [.colon])
 
         ignoreWhitespace()
 
@@ -349,7 +313,7 @@ public class Parser {
 
         ignoreWhitespace()
 
-        let v = values()
+        let v = stringUntilTerminator(terminators: [.eol, .eof])
 
         return MetadataNode(k, v)
     }
@@ -404,7 +368,6 @@ public class Parser {
 
         return node
     }
-
 
     // MARK: - Public methods.
 

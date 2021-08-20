@@ -58,16 +58,38 @@ class LexerTests: XCTestCase {
     }
     
     func testStringWithNumbers() {
-        let input = "abc 777 xyz"
+        let input = "abc 70770 xyz"
         let lexer = Lexer(input)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.integer(777)))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.integer(70770)))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
-    
+
+    func testStringWithDecimalNumbers() {
+        let input = "abc 0.70770 xyz"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.decimal(0.70770)))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testStringWithLikeNumbers() {
+        let input = "abc 0777 xyz"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("0777")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
     func testStringWithPunctuation() {
         let input = "abc – xyz: lol,"
         let lexer = Lexer(input)

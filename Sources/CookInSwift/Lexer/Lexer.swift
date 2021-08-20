@@ -92,6 +92,7 @@ public class Lexer {
      */
     private func number() -> Token {
         var lexem = ""
+
         while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) {
             lexem += String(character)
             advance()
@@ -108,8 +109,12 @@ public class Lexer {
 
             return .constant(.decimal(Float(lexem)!))
         }
-                
-        return .constant(.integer(Int(lexem)!))
+
+        if lexem.count > 1 && lexem.first! == "0" {
+            return .constant(.string(lexem))
+        } else {
+            return .constant(.integer(Int(lexem)!))
+        }
     }
 
     private func word() -> Token {

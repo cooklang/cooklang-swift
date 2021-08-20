@@ -246,6 +246,23 @@ class ParserTests: XCTestCase {
         
         XCTAssertEqual(result, node)
     }
+
+    func testFractionsLike() {
+        let recipe =
+            """
+            @milk{01/2%cup}
+            """
+
+        let parser = Parser(recipe)
+        let result = parser.parse() as! RecipeNode
+
+        let steps = [
+            StepNode(instructions: [IngredientNode(name: "milk", amount: AmountNode(quantity: ConstantNode.fractional((1, 2)), units: "cup"))])
+        ]
+        let node = RecipeNode(steps: steps)
+
+        XCTAssertEqual(result, node)
+    }
     
     func testFractionsWithSpaces() {
         let recipe =
@@ -534,17 +551,24 @@ class ParserTests: XCTestCase {
 
         XCTAssertEqual(result, node)
     }
+
+    func testMetadataMultiwordKeyWithSpaces() {
+        let recipe = ">>cooking time    :30 mins"
+
+        let parser = Parser(recipe)
+        let result = parser.parse() as! RecipeNode
+
+        let node = RecipeNode(steps: [], metadata: [MetadataNode("cooking time    ", "30 mins")])
+
+        XCTAssertEqual(result, node)
+    }
     
     func testServings() {
         let recipe = ">> servings: 1|2|3"
         
         let parser = Parser(recipe)
         let result = parser.parse() as! RecipeNode
-        let values = ValuesNode()
-        values.add(ConstantNode.integer(1))
-        values.add(ConstantNode.integer(2))
-        values.add(ConstantNode.integer(3))
-        let node = RecipeNode(steps: [], metadata: [MetadataNode("servings", values)])
+        let node = RecipeNode(steps: [], metadata: [MetadataNode("servings", "1|2|3")])
         
         XCTAssertEqual(result, node)
     }
