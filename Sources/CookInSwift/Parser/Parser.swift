@@ -13,6 +13,11 @@ enum TaggedParseStrategy {
     case multiWord
 }
 
+enum QuantityParseStrategy {
+    case number
+    case string
+}
+
 public class Parser {
 
     // MARK: - Fields
@@ -94,6 +99,7 @@ public class Parser {
         }
     }
 
+//    TODO support not only space?
     private func ignoreWhitespace() {
         while currentToken == .constant(.string(" ")) {
             eat(.constant(.string(" ")))
@@ -106,15 +112,37 @@ public class Parser {
     private func values() -> ValuesNode {
         let v = ValuesNode()
 
-        ignoreWhitespace()
+        var strategy: QuantityParseStrategy = .string
+        var i = tokenIndex
 
-        while true {
+        // need to look ahead to define if we can use numbers
+        strategyLookAghead: while i < tokens.count {
+            switch tokens[i] {
+            case .percent, .braces(.right):
+                break strategyLookAghead
+            case .constant(.decimal):
+                strategy = .number
+            case .constant(.integer):
+                strategy = .number
+            case .slash:
+                break strategyLookAghead
+            case let .constant(.string(value)):
+                if CharacterSet.whitespaces.contains(value.unicodeScalars.first!) {
+
+                } else {
+                    strategy = .string
+                }
+            default:
+                strategy = .string
+            }
+
+            i += 1
+        }
+
+        if strategy == .number {
+            ignoreWhitespace()
 
             switch currentToken {
-
-            case let .constant(.string(value)):
-                v.add(ConstantNode.string(value))
-                eat(.constant(.string(value)))
 
             case let .constant(.decimal(value)):
                 v.add(ConstantNode.decimal(value))
@@ -145,16 +173,19 @@ public class Parser {
                 }
             }
 
-            if currentToken == .pipe {
-                eat(.pipe)
-            } else {
-                break
+        } else {
+            let value = stringUntilTerminator(terminators: [.percent, .braces(.right)])
+
+            if value != "" {
+                v.add(ConstantNode.string(value))
             }
         }
 
         if v.isEmpty() {
             v.add(ConstantNode.integer(1))
         }
+
+        ignoreWhitespace()
 
         return v
     }
@@ -164,10 +195,8 @@ public class Parser {
      */
     private func amount() -> AmountNode {
         eat(.braces(.left))
-        ignoreWhitespace()
 
         let q = values()
-        ignoreWhitespace()
 
         var units = "items"
 
@@ -297,7 +326,7 @@ public class Parser {
 
         let key = stringUntilTerminator(terminators: [.colon])
 
-        eat(.colon)        
+        eat(.colon)
 
         let value = stringUntilTerminator(terminators: [.eol, .eof])
 
