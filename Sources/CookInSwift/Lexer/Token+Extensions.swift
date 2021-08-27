@@ -52,6 +52,8 @@ extension Constant: Equatable {
             return left == right
         case let (.decimal(left), .decimal(right)):
             return left == right
+        case let (.fractional((leftN, leftD)), .fractional((rightN, rightD))):
+            return leftN == rightN && leftD == rightD
         case let (.string(left), .string(right)):
             return left == right
         default:
@@ -114,6 +116,8 @@ extension Constant: Literal {
                 return String(value)
             case let .decimal(value):
                 return String(value)
+            case let .fractional((nominator, denominator)):
+                return "\(nominator)/\(denominator)"
             case let .string(value):
                 return value
             }
@@ -138,7 +142,9 @@ extension Constant: CustomStringConvertible {
         case let .integer(value):
             return "INTEGER_CONST(\(value))"
         case let .decimal(value):
-            return "DECIMAL_CONST(\(value))"        
+            return "DECIMAL_CONST(\(value))"
+        case let .fractional((nominator, denominator)):
+            return "FRACTIONAL_CONST(\(nominator)/\(denominator)"
         case let .string(value):
             return "STRING_CONST(\(value))"
         }

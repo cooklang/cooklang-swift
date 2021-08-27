@@ -79,6 +79,74 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
 
+    func testStringWithDecimalLikeNumbers() {
+        let input = "abc 01.70770 xyz"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("01")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(".")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.integer(70770)))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testDecimalNumbers() {
+        let input = "0.70770"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.decimal(0.70770)))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testIntegerNumbers() {
+        let input = "70770"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.integer(70770)))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testIntegerLikeNumbers() {
+        let input = "70770hehe"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("70770hehe")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+
+    func testFractionalNumbers() {
+        let input = "1/2"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.fractional((1, 2))))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testFractionalNumbersWithSpaces() {
+        let input = " 1 / 2"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.fractional((1, 2))))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testFractionalNumbersWithSpacesAfter() {
+        let input = " 1 / 2 "
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.fractional((1, 2))))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testAlmostFractionalNumbers() {
+        let input = "01/2"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("01")))
+        XCTAssertEqual(lexer.getNextToken(), .slash)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.integer(2)))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
     func testStringWithLeadingZeroNumbers() {
         let input = "abc 0777 xyz"
         let lexer = Lexer(input)
@@ -173,9 +241,7 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .at)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("onions")))
         XCTAssertEqual(lexer.getNextToken(), .braces(.left))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.integer(1)))
-        XCTAssertEqual(lexer.getNextToken(), .slash)
-        XCTAssertEqual(lexer.getNextToken(), .constant(.integer(4)))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.fractional((1,4))))
         XCTAssertEqual(lexer.getNextToken(), .percent)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("medium")))
         XCTAssertEqual(lexer.getNextToken(), .braces(.right))
@@ -189,11 +255,7 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .at)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("onions")))
         XCTAssertEqual(lexer.getNextToken(), .braces(.left))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.integer(1)))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
-        XCTAssertEqual(lexer.getNextToken(), .slash)
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.integer(4)))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.fractional((1,4))))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
         XCTAssertEqual(lexer.getNextToken(), .percent)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("medium")))

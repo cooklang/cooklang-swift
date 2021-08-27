@@ -116,19 +116,21 @@ public class Parser {
         var i = tokenIndex
 
         // need to look ahead to define if we can use numbers
-        strategyLookAghead: while i < tokens.count {
+        strategyLookAhead: while i < tokens.count {
             switch tokens[i] {
             case .percent, .braces(.right):
-                break strategyLookAghead
+                break strategyLookAhead
             case .constant(.decimal):
                 strategy = .number
             case .constant(.integer):
                 strategy = .number
+            case .constant(.fractional):
+                strategy = .number
             case .slash:
-                break strategyLookAghead
+                break strategyLookAhead
             case let .constant(.string(value)):
                 if CharacterSet.whitespaces.contains(value.unicodeScalars.first!) {
-
+                    break
                 } else {
                     strategy = .string
                 }
@@ -150,22 +152,11 @@ public class Parser {
 
             case let .constant(.integer(value)):
                 eat(.constant(.integer(value)))
-                ignoreWhitespace()
+                v.add(ConstantNode.integer(value))
 
-                if currentToken == .slash {
-                    eat(.slash)
-                    ignoreWhitespace()
-
-                    let numerator = value
-                    guard case let .constant(.integer(denominator)) = currentToken else {
-                        fatalError("Integer expected, got \(currentToken)")
-                    }
-
-                    v.add(ConstantNode.fractional((numerator, denominator)))
-                    eat(.constant(.integer(denominator)))
-                } else {
-                    v.add(ConstantNode.integer(value))
-                }
+            case let .constant(.fractional((n, d))):
+                eat(.constant(.fractional((n, d))))
+                v.add(ConstantNode.fractional((n, d)))
 
             default:
                 if !(currentToken == .braces(.right) || currentToken == .percent) {

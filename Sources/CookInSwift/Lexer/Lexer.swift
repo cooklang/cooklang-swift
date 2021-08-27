@@ -8,6 +8,15 @@
 
 import Foundation
 
+enum NumberParseStrategy {
+    case integer
+    case preSlashFractional
+    case postSlashFractional
+    case fractional
+    case decimal
+    case string
+}
+
 /**
  Basic lexical analyzer converting program text into tokens
  */
@@ -93,14 +102,97 @@ public class Lexer {
     private func number() -> Token {
         var lexem = ""
 
-        while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) {
-            lexem += String(character)
-            advance()
+        var strategy: NumberParseStrategy = .integer
+
+        var i = currentPosition + 1
+
+        // need to look ahead to define if we can use numbers
+        strategyLookAhead: while i < text.count {
+            let character = text[text.index(text.startIndex, offsetBy: i)].unicodeScalars.first!
+
+            switch strategy {
+            case .integer:
+                if CharacterSet.decimalDigits.contains(character) {
+                    break
+                } else if character == "." {
+                    strategy = .decimal
+                    break
+                } else if character == "/" {
+                    strategy = .postSlashFractional
+                    break
+                } else if CharacterSet.whitespaces.contains(character) {
+                    strategy = .preSlashFractional
+                    break
+                } else if CharacterSet.newlines.contains(character) || CharacterSet.punctuationCharacters.contains(character) || CharacterSet.symbols.contains(character) {
+                    break strategyLookAhead
+                } else {
+                    strategy = .string
+                    break strategyLookAhead
+                }
+            case .decimal:
+                if CharacterSet.decimalDigits.contains(character) {
+                    break
+                } else if CharacterSet.newlines.contains(character) || CharacterSet.whitespaces.contains(character) || CharacterSet.punctuationCharacters.contains(character) || CharacterSet.symbols.contains(character) {
+                    break strategyLookAhead
+                } else {
+                    strategy = .string
+                    break strategyLookAhead
+                }
+            case .preSlashFractional:
+                if CharacterSet.whitespaces.contains(character) {
+                    break
+                } else if character == "/" {
+                    strategy = .postSlashFractional
+                    break
+                } else {
+                    strategy = .integer
+                    break strategyLookAhead
+                }
+
+            case .postSlashFractional:
+                if CharacterSet.decimalDigits.contains(character) {
+                    strategy = .fractional
+                    break
+                } else if CharacterSet.whitespaces.contains(character) {
+                    break
+                } else {
+                    strategy = .string
+                    break strategyLookAhead
+                }
+
+            case .fractional:
+                if CharacterSet.decimalDigits.contains(character) {
+                    break
+                } else if CharacterSet.newlines.contains(character) || CharacterSet.whitespaces.contains(character) || CharacterSet.punctuationCharacters.contains(character) || CharacterSet.symbols.contains(character) {
+                    break strategyLookAhead
+                } else {
+                    strategy = .string
+                    break strategyLookAhead
+                }
+            default:
+                fatalError("Lexer bug, unspecified case for number parsing")
+            }
+
+            i += 1
         }
 
-        if let character = currentCharacter, character == ".", text[text.index(text.startIndex, offsetBy: currentPosition + 1)] != "." {
-            lexem += "."
-            advance()
+        switch strategy {
+        case .decimal:
+            let nextCharacter = peek()
+
+            if let character = currentCharacter, character == "0" && nextCharacter! !=  "." {
+                return word()
+            }
+
+            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) {
+                lexem += String(character)
+                advance()
+            }
+
+            if let character = currentCharacter, character == "." {
+                lexem += "."
+                advance()
+            }
 
             while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) {
                 lexem += String(character)
@@ -108,22 +200,51 @@ public class Lexer {
             }
 
             return .constant(.decimal(Float(lexem)!))
-        }
+        case .integer:
+            if let character = currentCharacter, character == "0" {
+                return word()
+            }
 
-        // case for "56peppers": we consider it string
-        if let character = currentCharacter, onlyLetters.contains(character.unicodeScalars.first!) {
-            while let character = currentCharacter, CharacterSet.alphanumerics.contains(character.unicodeScalars.first!) {
+            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) {
                 lexem += String(character)
                 advance()
             }
 
-            return .constant(.string(lexem))
-        }
-
-        if lexem.count > 1 && lexem.first! == "0" {
-            return .constant(.string(lexem))
-        } else {
             return .constant(.integer(Int(lexem)!))
+        case .fractional:
+            if let character = currentCharacter, character == "0" {
+                return word()
+            }
+
+            var nominator = ""
+            var denominator = ""
+            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) {
+                nominator += String(character)
+                advance()
+            }
+
+            while  let character = currentCharacter, CharacterSet.whitespaces.contains(character.unicodeScalars.first!) {
+                advance()
+            }
+
+            if let character = currentCharacter, character == "/" {
+                advance()
+            }
+
+            while  let character = currentCharacter, CharacterSet.whitespaces.contains(character.unicodeScalars.first!) {
+                advance()
+            }
+
+            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) {
+                denominator += String(character)
+                advance()
+            }
+
+            return .constant(.fractional((Int(nominator)!, Int(denominator)!)))
+        case .string:
+            return word()
+        default:
+            fatalError("Oops, something went wrong")
         }
     }
 

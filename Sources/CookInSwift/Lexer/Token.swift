@@ -16,7 +16,8 @@ public enum Braces {
 
 public enum Constant {
     case integer(Int)
-    case decimal(Float)    
+    case decimal(Float)
+    case fractional((Int, Int))
     case string(String)
 }
 
