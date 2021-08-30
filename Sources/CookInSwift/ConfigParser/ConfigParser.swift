@@ -45,7 +45,7 @@ func trim(_ s: String) -> String {
 func parseSectionHeader(_ line: String) -> String {
     let from = line.index(after: line.startIndex)
     let to = line.index(before: line.endIndex)
-    return line.substring(with: from..<to)
+    return String(line[from..<to])
 }
 
 

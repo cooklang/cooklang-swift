@@ -17,7 +17,7 @@ public enum ConstantNode: AST {
     case string(String)
 }
 
-public class ValuesNode: AST {
+public struct ValuesNode: AST {
     var values: [ConstantNode]
 
     init()  {
@@ -44,7 +44,7 @@ public class ValuesNode: AST {
         values = [ConstantNode(value)]
     }
 
-    func add(_ value: ConstantNode) {
+    mutating func add(_ value: ConstantNode) {
         values.append(value)
     }
 
@@ -53,7 +53,7 @@ public class ValuesNode: AST {
     }
 }
 
-class DirectionNode: AST {
+struct DirectionNode: AST {
     let value: String
 
     init(_ value: String) {
@@ -64,7 +64,7 @@ class DirectionNode: AST {
 
 
 
-class MetadataNode: AST {
+struct MetadataNode: AST {
     let key: String
     let value: ValuesNode
 
@@ -101,7 +101,7 @@ class MetadataNode: AST {
 }
 
 
-class AmountNode: AST {
+struct AmountNode: AST {
     let quantity: ValuesNode
     let units: String
 
@@ -136,7 +136,7 @@ class AmountNode: AST {
     }
 }
 
-class IngredientNode: AST {
+struct IngredientNode: AST {
     let name: String
     let amount: AmountNode
 
@@ -146,7 +146,7 @@ class IngredientNode: AST {
     }
 }
 
-class EquipmentNode: AST {
+struct EquipmentNode: AST {
     let name: String
 
     init(name: String) {
@@ -154,7 +154,7 @@ class EquipmentNode: AST {
     }
 }
 
-class TimerNode: AST {
+struct TimerNode: AST {
     let quantity: ValuesNode
     let units: String
 
@@ -189,7 +189,7 @@ class TimerNode: AST {
     }
 }
 
-class StepNode: AST {
+struct StepNode: AST {
     let instructions: [AST]
 
     init(instructions: [AST]) {
@@ -197,7 +197,7 @@ class StepNode: AST {
     }
 }
 
-class RecipeNode: AST {
+struct RecipeNode: AST {
     let steps: [StepNode]
     let metadata: [MetadataNode]
 

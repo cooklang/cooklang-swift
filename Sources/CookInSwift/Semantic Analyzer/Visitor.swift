@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol Visitor: class {
+protocol Visitor: AnyObject {
     func visit(node: AST)
     func visit(recipe: RecipeNode)
     func visit(step: StepNode)

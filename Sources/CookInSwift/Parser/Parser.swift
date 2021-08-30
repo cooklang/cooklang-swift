@@ -107,7 +107,7 @@ public class Parser {
 
      */
     private func values() -> ValuesNode {
-        let v = ValuesNode()
+        var v = ValuesNode()
 
         var strategy: QuantityParseStrategy = .string
         var i = tokenIndex
