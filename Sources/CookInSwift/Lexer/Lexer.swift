@@ -354,15 +354,13 @@ public class Lexer {
                         skipComment()
                         return .eol
                     } else {
-                        return .slash
+                        return .constant(.string("/"))
                     }
                 } else {
-                    return .slash
+                    return .constant(.string("/"))
                 }
-                
-                
             }
-            
+
             if CharacterSet.punctuationCharacters.contains(currentCharacter.unicodeScalars.first!) || CharacterSet.symbols.contains(currentCharacter.unicodeScalars.first!) {
                 return punctuation()
             }

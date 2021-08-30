@@ -26,7 +26,6 @@ public enum Token {
     case eol
     case at
     case percent
-    case slash
     case hash
     case tilde
     case chevron

@@ -88,9 +88,6 @@ public class Parser {
             case .pipe:
                 eat(.pipe)
                 items.append("|")
-            case .slash:
-                eat(.slash)
-                items.append("/")
             case .at, .hash, .tilde, .eof, .eol:
                 return DirectionNode(items.joined())
             default:
@@ -126,16 +123,17 @@ public class Parser {
                 strategy = .number
             case .constant(.fractional):
                 strategy = .number
-            case .slash:
-                break strategyLookAhead
             case let .constant(.string(value)):
+//                TODO not 100% right as this is valid only for fractional
                 if CharacterSet.whitespaces.contains(value.unicodeScalars.first!) {
                     break
                 } else {
                     strategy = .string
+                    break strategyLookAhead
                 }
             default:
                 strategy = .string
+                break strategyLookAhead
             }
 
             i += 1

@@ -312,7 +312,7 @@ class ParserTests: XCTestCase {
         ]
         let node = RecipeNode(steps: steps)
         
-        XCTAssertEqual(result, node)
+        XCTAssertEqual(result.printTree(), node.printTree())
     }
     
     

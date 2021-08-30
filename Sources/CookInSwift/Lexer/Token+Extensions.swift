@@ -23,8 +23,6 @@ extension Token: Equatable {
             return true
         case (.percent, .percent):
             return true
-        case (.slash, .slash):
-            return true
         case (.chevron, .chevron):
             return true
         case (.colon, .colon):
@@ -74,8 +72,6 @@ extension Token: Literal {
                 return ""
             case .percent:
                 return "%"
-            case .slash:
-                return "/"
             case .hash:
                 return "#"
             case .tilde:
@@ -162,8 +158,6 @@ extension Token: CustomStringConvertible {
             return "@"
         case .percent:
             return "%"
-        case .slash:
-            return "/"
         case .hash:
             return "#"
         case .tilde:
