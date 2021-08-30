@@ -89,6 +89,10 @@ class Inflector {
     }
     
     private func apply(rules: [InflectorRule], forString string: String) -> String {
+        if string == "" {
+            return ""
+        }
+
         if words.contains(string) {
             return string
         } else {

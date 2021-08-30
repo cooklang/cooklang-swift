@@ -40,10 +40,14 @@ public extension IngredientTable {
 
 extension IngredientAmount: CustomStringConvertible {
     public var description: String {
-        if let v = Int(quantity.value) {
-            return "\(quantity.value) \(units.pluralize(v))"
+        if units == "" {
+            return quantity.value
         } else {
-            return "\(quantity.value) \(units.pluralize(2))"
+            if let v = Int(quantity.value) {
+                return "\(quantity.value) \(units.pluralize(v))"
+            } else {
+                return "\(quantity.value) \(units.pluralize(2))"
+            }
         }
     }
 }

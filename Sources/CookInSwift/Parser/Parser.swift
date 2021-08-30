@@ -187,7 +187,7 @@ public class Parser {
 
         let q = values()
 
-        var units = "items"
+        var units = ""
 
         if currentToken == .percent {
             eat(.percent)
@@ -265,7 +265,7 @@ public class Parser {
         eat(.at)
 
         let name = taggedName()
-        var ingridientAmount = AmountNode(quantity: 1, units: "item")
+        var ingridientAmount = AmountNode(quantity: 1, units: "")
 
         if currentToken == .braces(.left) {
             ingridientAmount = amount()

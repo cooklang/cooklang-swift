@@ -136,7 +136,7 @@ class ParserTests: XCTestCase {
         let result = parser.parse() as! RecipeNode
                 
         let steps = [
-            StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(3), units: "item"))])
+            StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(3)))])
         ]
         let node = RecipeNode(steps: steps)
         
@@ -153,7 +153,7 @@ class ParserTests: XCTestCase {
         let result = parser.parse() as! RecipeNode
                 
         let steps = [
-            StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(1), units: "item"))])
+            StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(1)))])
         ]
         let node = RecipeNode(steps: steps)
         
@@ -170,7 +170,7 @@ class ParserTests: XCTestCase {
         let result = parser.parse() as! RecipeNode
 
         let steps = [
-            StepNode(instructions: [IngredientNode(name: "5peppers", amount: AmountNode(quantity: ConstantNode.integer(1), units: "item"))])
+            StepNode(instructions: [IngredientNode(name: "5peppers", amount: AmountNode(quantity: ConstantNode.integer(1)))])
         ]
         let node = RecipeNode(steps: steps)
 
@@ -204,7 +204,7 @@ class ParserTests: XCTestCase {
         let result = parser.parse() as! RecipeNode
                 
         let steps = [
-            StepNode(instructions: [IngredientNode(name: "hot chilli", amount: AmountNode(quantity: ConstantNode.integer(3), units: "item"))])
+            StepNode(instructions: [IngredientNode(name: "hot chilli", amount: AmountNode(quantity: ConstantNode.integer(3)))])
         ]
         let node = RecipeNode(steps: steps)
         
@@ -221,7 +221,7 @@ class ParserTests: XCTestCase {
         let result = parser.parse() as! RecipeNode
 
         let steps = [
-            StepNode(instructions: [IngredientNode(name: "water", amount: AmountNode(quantity: ConstantNode.string("7 k"), units: "items"))])
+            StepNode(instructions: [IngredientNode(name: "water", amount: AmountNode(quantity: ConstantNode.string("7 k")))])
         ]
         let node = RecipeNode(steps: steps)
 
@@ -238,7 +238,7 @@ class ParserTests: XCTestCase {
         let result = parser.parse() as! RecipeNode
                 
         let steps = [
-            StepNode(instructions: [IngredientNode(name: "hot chilli", amount: AmountNode(quantity: ConstantNode.integer(1), units: "item"))])
+            StepNode(instructions: [IngredientNode(name: "hot chilli", amount: AmountNode(quantity: ConstantNode.integer(1)))])
         ]
         let node = RecipeNode(steps: steps)
         
@@ -255,7 +255,7 @@ class ParserTests: XCTestCase {
         let result = parser.parse() as! RecipeNode
                 
         let steps = [
-            StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(1), units: "item")),
+            StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(1))),
                                     DirectionNode(" cut into pieces"),
             ])
         ]
@@ -326,9 +326,9 @@ class ParserTests: XCTestCase {
         let result = parser.parse() as! RecipeNode
                 
         let steps = [
-            StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(1), units: "item")),
+            StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(1))),
                                     DirectionNode(" cut into pieces and "),
-                                    IngredientNode(name: "garlic", amount: AmountNode(quantity: ConstantNode.integer(1), units: "item")),
+                                    IngredientNode(name: "garlic", amount: AmountNode(quantity: ConstantNode.integer(1))),
             ])
         ]
         let node = RecipeNode(steps: steps)

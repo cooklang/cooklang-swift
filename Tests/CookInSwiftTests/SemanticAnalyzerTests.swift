@@ -71,7 +71,7 @@ class SemanticAnalyzerTests: XCTestCase {
 
         table = table + parsedRecipe1.ingredientsTable + parsedRecipe2.ingredientsTable
 
-        XCTAssertEqual(table.description, "chilli: 6 items; ginger: 20 g; honey: 4 tbsp; milk: 2 litres, 500 ml")
+        XCTAssertEqual(table.description, "chilli: 6; ginger: 20 g; honey: 4 tbsp; milk: 2 litres, 500 ml")
     }
     
 //    test valid ingridient: when only units, but no name of in
