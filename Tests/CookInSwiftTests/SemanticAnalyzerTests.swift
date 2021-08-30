@@ -12,10 +12,9 @@ import XCTest
 
 class SemanticAnalyzerTests: XCTestCase {
     func testSemanticAnalyzer() {
-        // TODO properly support "30 mins" as cooking time metadata
         let program =
             """
-            >> cooking time: hour
+            >> cooking time: 30 min
             Add @chilli{3}, @ginger{10%g} and @milk{1%litre} place in #oven and cook for ~{10%minutes}
             """
 
@@ -26,7 +25,7 @@ class SemanticAnalyzerTests: XCTestCase {
         let parsedRecipe = analyzer.analyze(node: node)
 
         let recipe = SemanticRecipe()
-        recipe.metadata["cooking time"] = "hour"
+        recipe.metadata["cooking time"] = "30 min"
 
         let step = SemanticStep()
         step.directions = [

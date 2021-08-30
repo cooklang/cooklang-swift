@@ -12,7 +12,7 @@ import Foundation
 
 extension SemanticRecipe: Equatable {
     public static func == (lhs: SemanticRecipe, rhs: SemanticRecipe) -> Bool {
-        return lhs.steps == rhs.steps // TODO&& lhs.metadata == rhs.metadata
+        return lhs.steps == rhs.steps && lhs.metadata == rhs.metadata
     }
 }
 

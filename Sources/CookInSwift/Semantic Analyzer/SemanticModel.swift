@@ -25,7 +25,6 @@ public class SemanticRecipe: Identifiable {
     }
 
     func addMetadata(_ m: [MetadataNode]) {
-        // TODO
         m.forEach{ item in
             metadata[item.key] = item.value.description
         }
