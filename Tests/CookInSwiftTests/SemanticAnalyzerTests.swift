@@ -115,16 +115,17 @@ class SemanticAnalyzerTests: XCTestCase {
 
             """
 
-        let analyzer = SemanticAnalyzer()
-        var parser: Parser?
-        var parsed: AST?
-        var parsedRecipe: SemanticRecipe?
 
-        parser = Parser(recipe)
-        parsed = parser!.parse()
-        parsedRecipe = analyzer.analyze(node: parsed!)
 
-        XCTAssertEqual(parsedRecipe!.ingredientsTable.description, "avocados: 2; black pepper: 2; butter: 30 g; cannellini beans: 2 tins; cheddar cheese: 75 g; cherry tomatoes: 10; coriander: 1 bunch; eggs: 8 larges; fresh red chilli: 2; garlic clove: 2; ground cumin: 1 pinch; lime: 2; olive oil: 1 tbsp; red chilli: 1 item; red onion: 1; salt: 1; sea salt: 1; smoked paprika: 1 pinch; sour cream: 200 ml; tinned tomatoes: 2 tins; tortillas: 6 larges")
+        measure {
+            let analyzer = SemanticAnalyzer()
+
+            let parser = Parser(recipe)
+            let parsed = parser.parse()
+            let parsedRecipe = analyzer.analyze(node: parsed)
+
+            XCTAssertEqual(parsedRecipe.ingredientsTable.description, "avocados: 2; black pepper: 2; butter: 30 g; cannellini beans: 2 tins; cheddar cheese: 75 g; cherry tomatoes: 10; coriander: 1 bunch; eggs: 8 large; fresh red chilli: 2; garlic clove: 2; ground cumin: 1 pinch; lime: 2; olive oil: 1 tbsp; red chilli: 1 item; red onion: 1; salt: 1; sea salt: 1; smoked paprika: 1 pinch; sour cream: 200 ml; tinned tomatoes: 2 tins; tortillas: 6 large")
+        }
 
     }
 

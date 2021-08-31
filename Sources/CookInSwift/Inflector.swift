@@ -39,6 +39,7 @@ class Inflector {
     private var pluralRules: [InflectorRule] = []
     private var singularRules: [InflectorRule] = []
     private var words: Set<String> = Set<String>()
+    private var regexCache: [String: NSRegularExpression] = [:]
     
     init() {
         irregulars.forEach { (key, value) in
@@ -74,10 +75,12 @@ class Inflector {
     
     func addSingularRule(rule: String, forReplacement replacement: String) {
         singularRules.append(InflectorRule(rule: rule, replacement: replacement))
+        regexCache[rule] = try! NSRegularExpression(pattern: rule, options: .caseInsensitive)
     }
     
     func addPluralRule(rule: String, forReplacement replacement: String) {
         pluralRules.append(InflectorRule(rule: rule, replacement: replacement))
+        regexCache[rule] = try! NSRegularExpression(pattern: rule, options: .caseInsensitive)
     }
     
     func uncountableWord(word: String) {
@@ -98,7 +101,7 @@ class Inflector {
         } else {
             for rule in rules {
                 let range = NSMakeRange(0, string.count)
-                let regex: NSRegularExpression = try! NSRegularExpression(pattern: rule.rule, options: .caseInsensitive)
+                let regex: NSRegularExpression = regexCache[rule.rule]!
                 if let _ = regex.firstMatch(in: string, options: [], range: range) {
                     return regex.stringByReplacingMatches(in: string, options: [], range: range, withTemplate: rule.replacement)
                 }
@@ -108,7 +111,7 @@ class Inflector {
     }
 }
 
-fileprivate let uncountables = ["access", "accommodation", "adulthood", "advertising", "advice", "aggression", "aid", "air", "alcohol", "anger", "applause", "arithmetic", "art", "assistance", "athletics", "attention", "bacon", "baggage", "ballet", "beauty", "beef", "beer", "biology", "botany", "bread", "butter", "carbon", "cash", "chaos", "cheese", "chess", "childhood", "clothing", "coal", "coffee", "commerce", "compassion", "comprehension", "content", "corruption", "cotton", "courage", "cream", "currency", "dancing", "danger", "data", "delight", "dignity", "dirt", "distribution", "dust", "economics", "education", "electricity", "employment", "engineering", "envy", "equipment", "ethics", "evidence", "evolution", "faith", "fame", "fish", "flour", "flu", "food", "freedom", "fuel", "fun", "furniture", "garbage", "garlic", "genetics", "gold", "golf", "gossip", "grammar", "gratitude", "grief", "ground", "guilt", "gymnastics", "hair", "happiness", "hardware", "harm", "hate", "hatred", "health", "heat", "height", "help", "homework", "honesty", "honey", "hospitality", "housework", "humour", "hunger", "hydrogen", "ice", "importance", "inflation", "information", "injustice", "innocence", "iron", "irony", "jealousy", "jeans", "jelly", "judo", "karate", "kindness", "knowledge", "labour", "lack", "laughter", "lava", "leather", "leisure", "lightning", "linguistics", "litter", "livestock", "logic", "loneliness", "luck", "luggage", "machinery", "magic", "management", "mankind", "marble", "mathematics", "mayonnaise", "measles", "meat", "methane", "milk", "money", "mud", "music", "nature", "news", "nitrogen", "nonsense", "nurture", "nutrition", "obedience", "obesity", "oil", "oxygen", "passion", "pasta", "patience", "permission", "physics", "poetry", "police", "pollution", "poverty", "power", "pronunciation", "psychology", "publicity", "quartz", "racism", "rain", "relaxation", "reliability", "research", "respect", "revenge", "rice", "rubbish", "rum", "salad", "satire", "seaside", "series", "shame", "sheep", "shopping", "silence", "sleep", "smoke", "smoking", "snow", "soap", "software", "soil", "sorrow", "soup", "species", "speed", "spelling", "steam", "stuff", "stupidity", "sunshine", "symmetry", "tennis", "thirst", "thunder", "toast", "tolerance", "toys", "traffic", "transporation", "travel", "trust", "understanding", "unemployment", "unity", "validity", "veal", "vengeance", "violence", "g", "kg", "tbsp", "tbs", "ml", "l", "small", "medium"]
+fileprivate let uncountables = ["alcohol", "bacon", "beef", "beer", "bread", "butter", "cheese", "coffee", "cream", "fish", "flour", "flu", "food", "garlic", "ground", "honey", "ice", "iron", "jelly", "mayonnaise", "meat", "milk", "oil", "pasta", "rice", "rum", "salad", "sheep", "shopping", "soup", "steam", "toast", "veal", "vengeance", "g", "kg", "tbsp", "tbs", "ml", "l", "small", "medium", "large"]
 
 fileprivate let singularToPlural = [
     ("$", "s"),
@@ -168,21 +171,11 @@ fileprivate let unchangings = [
     "moose",
     "swine",
     "bison",
-    "corps",
-    "means",
-    "series",
-    "scissors",
-    "species"]
+    "corps"]
 
 fileprivate let irregulars = [
     ("person", "people"),
-    ("man", "men"),
-    ("child", "children"),
-    ("sex", "sexes"),
-    ("move", "moves"),
-    ("zombie", "zombies")]
-
-
+]
 
 struct InflectorRule {
     var rule: String
