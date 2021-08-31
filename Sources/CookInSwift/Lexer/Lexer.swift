@@ -24,14 +24,16 @@ public class Lexer {
 
     // MARK: - Fields
     private let onlyLetters = CharacterSet.letters.subtracting(CharacterSet.nonBaseCharacters)
-    private let text: String
+    private let text: [Character]
+    private let count: Int
     private var currentPosition: Int
     private var currentCharacter: Character?
 
     // MARK: - Constants
 
     public init(_ text: String) {
-        self.text = text
+        self.text = Array(text)
+        self.count = text.count
         currentPosition = 0
         currentCharacter = text.isEmpty ? nil : text[text.startIndex]
     }
@@ -71,7 +73,8 @@ public class Lexer {
      */
     private func advance() {
         currentPosition += 1
-        guard currentPosition < text.count else {
+
+        guard currentPosition < count else {
             currentCharacter = nil
             return
         }
@@ -87,7 +90,7 @@ public class Lexer {
     private func peek() -> Character? {
         let peekPosition = currentPosition + 1
 
-        guard peekPosition < text.count else {
+        guard peekPosition < count else {
             return nil
         }
 
@@ -107,7 +110,7 @@ public class Lexer {
         var i = currentPosition + 1
 
         // need to look ahead to define if we can use numbers
-        strategyLookAhead: while i < text.count {
+        strategyLookAhead: while i < count {
             let character = text[text.index(text.startIndex, offsetBy: i)].unicodeScalars.first!
 
             switch strategy {
