@@ -412,6 +412,25 @@ class ParserTests: XCTestCase {
 
         XCTAssertEqual(result, node)
     }
+
+//    func testTimerWithName() {
+//        let recipe =
+//            """
+//            Fry for ~potato{42%minutes}
+//            """
+//
+//        let parser = Parser(recipe)
+//        let result = parser.parse() as! RecipeNode
+//
+//        let steps = [
+//            StepNode(instructions: [
+//                    DirectionNode("Fry for "),
+//                        TimerNode(quantity: 42, units: "minutes", name: "potato")]),
+//        ]
+//        let node = RecipeNode(steps: steps)
+//
+//        XCTAssertEqual(result, node)
+//    }
     
     func testTimerDecimal() {
         let recipe =

@@ -162,7 +162,7 @@ extension AST {
         case let equipment as EquipmentNode:
             return "EQ: \(equipment.name)"
         case let timer as TimerNode:
-            return "TIMER: \(timer.quantity) \(timer.units)"
+            return "TIMER(\(timer.name)): \(timer.quantity) \(timer.units)"
         case let v as ValuesNode:
             return "\(v)"
         case let amount as AmountNode:

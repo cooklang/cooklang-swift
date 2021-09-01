@@ -157,35 +157,42 @@ struct EquipmentNode: AST {
 struct TimerNode: AST {
     let quantity: ValuesNode
     let units: String
+    let name: String
 
-    init(quantity: ValuesNode, units: String) {
+    init(quantity: ValuesNode, units: String, name: String = "") {
         self.quantity = quantity
         self.units = units
+        self.name = name
     }
 
-    init(quantity: ConstantNode, units: String) {
+    init(quantity: ConstantNode, units: String, name: String = "") {
         self.quantity = ValuesNode(quantity)
         self.units = units
+        self.name = name
     }
 
-    init(quantity: String, units: String) {
+    init(quantity: String, units: String, name: String = "") {
         self.quantity = ValuesNode(ConstantNode.string(quantity))
         self.units = units
+        self.name = name
     }
 
-    init(quantity: Int, units: String) {
+    init(quantity: Int, units: String, name: String = "") {
         self.quantity = ValuesNode(ConstantNode.integer(quantity))
         self.units = units
+        self.name = name
     }
 
-    init(quantity: Float, units: String) {
+    init(quantity: Float, units: String, name: String = "") {
         self.quantity = ValuesNode(ConstantNode.decimal(quantity))
         self.units = units
+        self.name = name
     }
 
-    init(quantity: (Int, Int), units: String) {
+    init(quantity: (Int, Int), units: String, name: String = "") {
         self.quantity = ValuesNode(ConstantNode.fractional(quantity))
         self.units = units
+        self.name = name
     }
 }
 

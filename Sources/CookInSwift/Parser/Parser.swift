@@ -9,8 +9,8 @@
 import Foundation
 
 enum TaggedParseStrategy {
-    case oneWord
-    case multiWord
+    case noBraces
+    case withBraces
 }
 
 enum QuantityParseStrategy {
@@ -230,12 +230,12 @@ public class Parser {
         // need to look ahead to define if we need to wait for braces or not
         while i < tokens.count {
             if tokens[i] == .braces(.left) {
-                strategy = .multiWord
+                strategy = .withBraces
                 break
             }
 
             if tokens[i] == .eof || tokens[i] == .eol || tokens[i] == .at || tokens[i] == .hash || tokens[i] == .tilde {
-                strategy = .oneWord
+                strategy = .noBraces
                 break
             }
 
@@ -243,9 +243,9 @@ public class Parser {
         }
 
         switch strategy {
-        case .multiWord:
+        case .withBraces:
             return stringUntilTerminator(terminators: [.braces(.left)])
-        case .oneWord:
+        case .noBraces:
             guard case let .constant(.string(value)) = currentToken else {
                 fatalError("String expected, got \(currentToken)")
             }
@@ -296,14 +296,14 @@ public class Parser {
      */
     private func timer() -> TimerNode {
         eat(.tilde)
-//        TODO eat name
+        let name = ""// taggedName()
         eat(.braces(.left))
         let quantity = values()
         eat(.percent)
         let units = stringUntilTerminator(terminators: [.braces(.right)])
         eat(.braces(.right))
 
-        return TimerNode(quantity: quantity, units: units)
+        return TimerNode(quantity: quantity, units: units, name: name)
     }
 
     /**
