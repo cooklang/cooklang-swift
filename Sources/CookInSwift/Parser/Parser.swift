@@ -228,11 +228,11 @@ public class Parser {
 
      */
     private func taggedName() -> String {
-        var i = tokenIndex + 1
+        var i = tokenIndex
         var strategy: TaggedParseStrategy?
 
         // need to look ahead to define if we need to wait for braces or not
-        while i < tokens.count {
+        while i < tokens.count {            
             if tokens[i] == .braces(.left) {
                 strategy = .withBraces
                 break
@@ -300,7 +300,7 @@ public class Parser {
      */
     private func timer() -> TimerNode {
         eat(.tilde)
-        let name = ""// taggedName()
+        let name = taggedName()
         eat(.braces(.left))
         let quantity = values()
         eat(.percent)
