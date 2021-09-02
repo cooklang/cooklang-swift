@@ -19,6 +19,7 @@ public enum Constant {
     case decimal(Float)
     case fractional((Int, Int))
     case string(String)
+    case space
 }
 
 public enum Token {

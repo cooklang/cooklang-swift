@@ -270,12 +270,10 @@ public class Lexer {
     }
     
     private func whitespace() -> Token {
-        var lexem = ""
         while let character = currentCharacter, CharacterSet.whitespaces.contains(character.unicodeScalars.first!) {
-            lexem += String(character)
             advance()
         }
-        return .constant(.string(lexem))
+        return .constant(.space)
     }
 
     // MARK: - Public methods

@@ -54,6 +54,8 @@ extension Constant: Equatable {
             return leftN == rightN && leftD == rightD
         case let (.string(left), .string(right)):
             return left == right
+        case (.space, .space):
+            return true
         default:
             return false
         }
@@ -116,6 +118,8 @@ extension Constant: Literal {
                 return "\(nominator)/\(denominator)"
             case let .string(value):
                 return value
+            case let .space:
+                return " "
             }
         }
     }
@@ -143,6 +147,8 @@ extension Constant: CustomStringConvertible {
             return "FRACTIONAL_CONST(\(nominator)/\(denominator)"
         case let .string(value):
             return "STRING_CONST(\(value))"
+        case .space:
+            return "SPACE_CONST"
         }
     }
 }

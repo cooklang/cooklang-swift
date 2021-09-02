@@ -19,25 +19,25 @@ class LexerTests: XCTestCase {
 
     func testWhitespaceOnlyInput() {
         let lexer = Lexer(" ")
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
 
     func testNewLineInput() {
         let input = "   \n    "
         let lexer = Lexer(input)
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string("   ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .eol)
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string("    ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
     
     func testMultipleNewLinesInput() {
         let input = "   \n\n    "
         let lexer = Lexer(input)
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string("   ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .eol)
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string("    ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
     
@@ -52,7 +52,7 @@ class LexerTests: XCTestCase {
         let input = "abc xyz"
         let lexer = Lexer(input)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
@@ -61,9 +61,9 @@ class LexerTests: XCTestCase {
         let input = "abc 70770 xyz"
         let lexer = Lexer(input)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.integer(70770)))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
@@ -72,9 +72,9 @@ class LexerTests: XCTestCase {
         let input = "abc 0.70770 xyz"
         let lexer = Lexer(input)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.decimal(0.70770)))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
@@ -83,11 +83,11 @@ class LexerTests: XCTestCase {
         let input = "abc 01.70770 xyz"
         let lexer = Lexer(input)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("01")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string(".")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.integer(70770)))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
@@ -121,10 +121,17 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
 
-    func testFractionalNumbersWithSpaces() {
+    func testFractionalNumbersWithSpaces1() {
+        let input = "1 / 2"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.fractional((1, 2))))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testFractionalNumbersWithSpaces2() {
         let input = " 1 / 2"
         let lexer = Lexer(input)
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.fractional((1, 2))))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
@@ -132,9 +139,9 @@ class LexerTests: XCTestCase {
     func testFractionalNumbersWithSpacesAfter() {
         let input = " 1 / 2 "
         let lexer = Lexer(input)
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.fractional((1, 2))))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
 
@@ -151,9 +158,9 @@ class LexerTests: XCTestCase {
         let input = "abc 0777 xyz"
         let lexer = Lexer(input)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("0777")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
@@ -162,9 +169,9 @@ class LexerTests: XCTestCase {
         let input = "abc 7peppers xyz"
         let lexer = Lexer(input)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("7peppers")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
@@ -173,12 +180,12 @@ class LexerTests: XCTestCase {
         let input = "abc – xyz: lol,"
         let lexer = Lexer(input)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("–")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
         XCTAssertEqual(lexer.getNextToken(), .colon)
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("lol")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string(",")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
@@ -188,13 +195,13 @@ class LexerTests: XCTestCase {
         let input = "abc – ...,,xyz: lol,"
         let lexer = Lexer(input)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("–")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("...,,")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("xyz")))
         XCTAssertEqual(lexer.getNextToken(), .colon)
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("lol")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string(",")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
@@ -205,7 +212,7 @@ class LexerTests: XCTestCase {
         let lexer = Lexer(input)
     
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("Add")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .at)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("onions")))
         XCTAssertEqual(lexer.getNextToken(), .braces(.left))
@@ -213,9 +220,9 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .percent)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("medium")))
         XCTAssertEqual(lexer.getNextToken(), .braces(.right))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("chopped")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("finely")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
@@ -256,7 +263,7 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("onions")))
         XCTAssertEqual(lexer.getNextToken(), .braces(.left))
         XCTAssertEqual(lexer.getNextToken(), .constant(.fractional((1,4))))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .percent)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("medium")))
         XCTAssertEqual(lexer.getNextToken(), .braces(.right))
@@ -276,7 +283,7 @@ class LexerTests: XCTestCase {
         let lexer = Lexer(input)
         
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("onions")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("/")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
@@ -286,18 +293,18 @@ class LexerTests: XCTestCase {
         let lexer = Lexer(input)
         
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("Preheat")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("the")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("oven")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("to")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.integer(200)))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("℃")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("/")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("Fan")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.integer(180)))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("°")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("C")))
@@ -332,7 +339,7 @@ class LexerTests: XCTestCase {
     
         XCTAssertEqual(lexer.getNextToken(), .at)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("red")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("onions")))
         XCTAssertEqual(lexer.getNextToken(), .braces(.left))
         XCTAssertEqual(lexer.getNextToken(), .braces(.right))
@@ -346,7 +353,7 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .at)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("onions")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string(",")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("chopped")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
@@ -356,12 +363,12 @@ class LexerTests: XCTestCase {
         let lexer = Lexer(input)
     
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("an")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .at)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("onion")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("finely")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("chopped")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
@@ -371,9 +378,9 @@ class LexerTests: XCTestCase {
         let lexer = Lexer(input)
     
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("put")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("into")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .hash)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("oven")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
@@ -384,12 +391,12 @@ class LexerTests: XCTestCase {
         let lexer = Lexer(input)
     
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("fry")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("on")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .hash)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("frying")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("pan")))
         XCTAssertEqual(lexer.getNextToken(), .braces(.left))
         XCTAssertEqual(lexer.getNextToken(), .braces(.right))
@@ -401,7 +408,7 @@ class LexerTests: XCTestCase {
         let lexer = Lexer(input)
     
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("cook")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("for")))
         XCTAssertEqual(lexer.getNextToken(), .tilde)
         XCTAssertEqual(lexer.getNextToken(), .braces(.left))
@@ -421,7 +428,7 @@ class LexerTests: XCTestCase {
         let lexer = Lexer(input)
     
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("Add")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .at)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("onions")))
         XCTAssertEqual(lexer.getNextToken(), .braces(.left))
@@ -429,13 +436,13 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .percent)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("medium")))
         XCTAssertEqual(lexer.getNextToken(), .braces(.right))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("chopped")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("finely")))
         XCTAssertEqual(lexer.getNextToken(), .eol)
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("Bonne")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("appetite")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("!")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
@@ -447,10 +454,10 @@ class LexerTests: XCTestCase {
     
         XCTAssertEqual(lexer.getNextToken(), .chevron)
         XCTAssertEqual(lexer.getNextToken(), .chevron)
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("servings")))
         XCTAssertEqual(lexer.getNextToken(), .colon)
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string(" ")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.integer(4)))
         XCTAssertEqual(lexer.getNextToken(), .pipe)
         XCTAssertEqual(lexer.getNextToken(), .constant(.integer(5)))

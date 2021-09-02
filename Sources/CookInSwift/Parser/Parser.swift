@@ -79,6 +79,9 @@ public class Parser {
             case let .constant(.decimal(value)):
                 eat(.constant(.decimal(value)))
                 items.append(String(value))
+            case .constant(.space):
+                eat(.constant(.space))
+                items.append(" ")
             case .chevron:
                 eat(.chevron)
                 items.append(">")
@@ -96,10 +99,9 @@ public class Parser {
         }
     }
 
-//    TODO support not only space?
     private func ignoreWhitespace() {
-        while currentToken == .constant(.string(" ")) {
-            eat(.constant(.string(" ")))
+        while currentToken == .constant(.space) {
+            eat(.constant(.space))
         }
     }
 
@@ -123,6 +125,8 @@ public class Parser {
                 strategy = .number
             case .constant(.fractional):
                 strategy = .number
+            case .constant(.space):
+                break
             case let .constant(.string(value)):
 //                TODO not 100% right as this is valid only for fractional
                 if CharacterSet.whitespaces.contains(value.unicodeScalars.first!) {
