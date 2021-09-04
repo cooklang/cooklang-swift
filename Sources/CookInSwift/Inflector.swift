@@ -111,7 +111,7 @@ class Inflector {
     }
 }
 
-fileprivate let uncountables = ["alcohol", "bacon", "beef", "beer", "bread", "butter", "cheese", "coffee", "cream", "fish", "flour", "flu", "food", "garlic", "ground", "honey", "ice", "iron", "jelly", "mayonnaise", "meat", "milk", "oil", "pasta", "rice", "rum", "salad", "sheep", "shopping", "soup", "steam", "toast", "veal", "vengeance", "g", "kg", "tbsp", "tbs", "ml", "l", "small", "medium", "large"]
+fileprivate let uncountables = ["alcohol", "bacon", "beef", "beer", "bread", "butter", "cheese", "coffee", "cream", "fish", "flour", "flu", "food", "garlic", "ground", "honey", "ice", "iron", "jelly", "mayonnaise", "meat", "milk", "oil", "pasta", "rice", "rum", "salad", "sheep", "shopping", "soup", "steam", "toast", "veal", "vengeance", "g", "kg", "tbsp", "tsp", "ml", "l", "small", "medium", "large"]
 
 fileprivate let singularToPlural = [
     ("$", "s"),

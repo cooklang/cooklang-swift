@@ -79,6 +79,9 @@ public class Parser {
             case let .constant(.decimal(value)):
                 eat(.constant(.decimal(value)))
                 items.append(String(value))
+            case let .constant(.fractional((nom, denom))):
+                eat(.constant(.fractional((nom, denom))))
+                items.append("\(nom)/\(denom)")
             case .constant(.space):
                 eat(.constant(.space))
                 items.append(" ")
@@ -322,6 +325,10 @@ public class Parser {
         eat(.colon)
 
         let value = stringUntilTerminator(terminators: [.eol, .eof])
+
+        if currentToken == .eol {
+            eat(.eol)
+        }
 
         return MetadataNode(key, value)
     }

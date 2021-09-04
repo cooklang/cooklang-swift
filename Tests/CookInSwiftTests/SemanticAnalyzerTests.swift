@@ -129,5 +129,82 @@ class SemanticAnalyzerTests: XCTestCase {
 
     }
 
+    func testLagman() {
+        let recipe =
+            """
+            >> Prep Time: 15 minutes
+            >> Cook Time: 30 minutes
+            >> Total Time: 45 minutes
+            >> Servings: 6 servings
+
+            Cook the @linguine pasta{230%g} according to the instructions. Drain and rinse with cold water. Keep covered until ready to use so it does not dry out.
+
+            Cube the @lamb{450%g} into small cubes. In a dutch oven, heat @oil. Once hot add meat, cook about ~{5%minutes}.
+
+            Meanwhile, finely chop the @onion{1%medium}. Finely dice @tomatoes{2%large}. Cube @carrots{1%large} and @red peppers{1/2%large} into even sizes. Cube @potatoes{420%g} into small cubes.
+
+            Add onions to the meat in the Dutch oven. Turn heat down to medium heat, cook until onions are tender.
+
+            Add tomatoes and @garlic{1%glove}, cook ~{2%minutes}, stirring as needed.
+
+            Add potatoes, carrots, peppers and mix well.
+
+            Pour in @water{1.4%kg}, @black pepper{1%tsp}, @ground coriander{1%tsp}, @ground cumin{1%tsp} and @bay leaves{2}, @star anise{1%small} and cook about ~{20%minutes}, until all of the vegetables are tender. Remove star anise once the soup is cooked.
+
+            Meanwhile, cook pasta. Drain and return to pot, cover to prevent from drying out.
+
+            Serve hearty soup over pasta.
+
+            """
+
+
+        let analyzer = SemanticAnalyzer()
+
+        let parser = Parser(recipe)
+        let parsed = parser.parse()
+        let parsedRecipe = analyzer.analyze(node: parsed)
+
+        XCTAssertEqual(parsedRecipe.ingredientsTable.description, "bay leaves: 2; black pepper: 1 tsp; carrots: 1 large; garlic: 1 glove; ground coriander: 1 tsp; ground cumin: 1 tsp; lamb: 450 g; linguine pasta: 230 g; oil: 1; onion: 1 medium; potatoes: 420 g; red peppers: 0.5 large; star anise: 1 small; tomatoes: 2 large; water: 1.4 kg")
+
+    }
+
+    func testManti() {
+        let recipe =
+            """
+            Attach the dough hook to the Kitchen Aid mixer. Mix the @milk{160%g}, @salt{1%tsp}, @egg{1%large} and @water{180%g}.
+
+            Add the @flour{530%g}, continue mixing until the dough is smooth and flour is well incorporated. (Dough should not stick to your hands.)
+
+            Keep the dough covered until ready to use.
+
+            Place @butter{110%g} into freezer. Cube @chicken thighs{450%g} into small pieces. Chop @onion{1%small} really fine. Peel @potatoes{450%g} and cube into small pieces, place in bowl and cover with cold water, set aside.
+
+            Divide dough into two. Return the one half to the bowl and cover. Lightly flour the working surface. Roll out the dough into about 20" to 22" circle, adding flour as needed, it needs to be really thin. Fold the circle as if it's and accordion going back and forth. With a sharp knife cut about every 2 1/2 inches. Take the strips and stack them. When stacking, the strips will all be different lengths, stack them all starting at one end, not in the middle. Cut again about every 2 2/12 inches.
+
+            Lay out the squares. Some pieces may not be complete squares, edges, just take two pieces and stick them together.
+
+            Finish the filling. Take out the butter from the freezer and either grate or cube. Drain potatoes add to the bowl, add @ground coriander{1/2%tsp}, @ground cumin{1/4%tsp}, @black pepper{1/4%tsp}, minced @garlic{2%cloves} add chopped @parsley{1%bunch}. Mix everything.
+
+            Take spoonfuls of the filling and add to the center of the squares.
+
+            Take a square, place one corner over the other and pinch together. Take the other corner and repeat. Pinch together the four openings. Now take the two edges and pinch them together as well, placing over edge over the other.
+
+            Add water to a tiered steamer. Lay out Manti on tiers. Cover steamer and cook 20-25 minutes. All steamers are different, check a Manti to see if it's ready. If using different meat, it'll need about 40 - 60 minutes.
+
+            Enjoy with butter and sour cream.
+            """
+
+
+        let analyzer = SemanticAnalyzer()
+
+        let parser = Parser(recipe)
+        let parsed = parser.parse()
+        let parsedRecipe = analyzer.analyze(node: parsed)
+
+        XCTAssertEqual(parsedRecipe.ingredientsTable.description, "black pepper: 0.25 tsp; butter: 110 g; chicken thighs: 450 g; egg: 1 large; flour: 530 g; garlic: 2 cloves; ground coriander: 0.5 tsp; ground cumin: 0.25 tsp; milk: 160 g; onion: 1 small; parsley: 1 bunch; potatoes: 450 g; salt: 1 tsp; water: 180 g")
+
+    }
+
+
     
 }

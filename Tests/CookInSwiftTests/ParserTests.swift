@@ -314,6 +314,23 @@ class ParserTests: XCTestCase {
         
         XCTAssertEqual(result.printTree(), node.printTree())
     }
+
+    func testFractionsInDirections() {
+        let recipe =
+            """
+            knife cut about every 1/2 inches
+            """
+
+        let parser = Parser(recipe)
+        let result = parser.parse() as! RecipeNode
+
+        let steps = [
+            StepNode(instructions: [DirectionNode("knife cut about every 1/2 inches")])
+        ]
+        let node = RecipeNode(steps: steps)
+
+        XCTAssertEqual(result.printTree(), node.printTree())
+    }
     
     
     func testMutipleIngridentsWithoutStopper() {
@@ -644,7 +661,20 @@ class ParserTests: XCTestCase {
         
         XCTAssertEqual(result, node)
     }
-    
+
+    func testMultipleLines() {
+        let recipe = """
+            >> Prep Time: 15 minutes
+            >> Cook Time: 30 minutes
+            """
+
+        let parser = Parser(recipe)
+        let result = parser.parse() as! RecipeNode
+        let node = RecipeNode(steps: [], metadata: [MetadataNode("Prep Time", "15 minutes"), MetadataNode("Cook Time", "30 minutes")])
+
+        XCTAssertEqual(result, node)
+    }
+
     
 //    TODO add tests for errors and edge-cases
     // TODO spaces in all possible random places
