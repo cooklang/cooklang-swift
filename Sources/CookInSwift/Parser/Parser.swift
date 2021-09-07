@@ -70,6 +70,8 @@ public class Parser {
 
         while true {
             switch currentToken {
+            case .eof, .eol:
+                return DirectionNode(items.joined())
             case let .constant(.string(value)):
                 eat(.constant(.string(value)))
                 items.append(value)
@@ -82,22 +84,18 @@ public class Parser {
             case let .constant(.fractional((nom, denom))):
                 eat(.constant(.fractional((nom, denom))))
                 items.append("\(nom)/\(denom)")
-            case .constant(.space):
-                eat(.constant(.space))
-                items.append(" ")
-            case .chevron:
-                eat(.chevron)
-                items.append(">")
-            case .colon:
-                eat(.colon)
-                items.append(":")
-            case .pipe:
-                eat(.pipe)
-                items.append("|")
-            case .at, .hash, .tilde, .eof, .eol:
+            case .tilde:
                 return DirectionNode(items.joined())
+            case .at, .hash:
+                if case .constant(.string) = nextToken {
+                    return DirectionNode(items.joined())
+                } else {
+                    items.append(currentToken.literal)
+                    eat(currentToken)
+                }
             default:
-                fatalError("Can't understand \(currentToken)")
+                items.append(currentToken.literal)
+                eat(currentToken)
             }
         }
     }
@@ -217,7 +215,8 @@ public class Parser {
             if terminators.contains(currentToken) {
                 break
             } else if currentToken == .eol || currentToken == .eof {
-                fatalError("Unexpectd end of line or endo of file")
+                print("Unexpectd end of line or endo of file")
+                break
             } else {
                 parts.append(currentToken.literal)
                 eat(currentToken)
@@ -350,15 +349,28 @@ public class Parser {
             case .eof:
                 return StepNode(instructions: instructions)
             case .at:
-                instructions.append(ingredient())
+                switch nextToken {
+                case .constant(.string), .constant(.integer):
+                    instructions.append(ingredient())
+                default:
+                    instructions.append(direction())
+                }
             case .hash:
-                instructions.append(equipment())
+                switch nextToken {
+                case .constant(.string), .constant(.integer):
+                    instructions.append(equipment())
+                default:
+                    instructions.append(direction())
+                }
             case .tilde:
-                instructions.append(timer())
-            case .constant:
-                instructions.append(direction())
+                switch nextToken {
+                case .constant(.string), .braces(.left):
+                    instructions.append(timer())
+                default:
+                    instructions.append(direction())
+                }
             default:
-                fatalError("Illigal instruction \(currentToken)")
+                instructions.append(direction())
             }
         }
     }
