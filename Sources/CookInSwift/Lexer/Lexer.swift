@@ -24,18 +24,18 @@ public class Lexer {
 
     // MARK: - Fields
     private let onlyLetters = CharacterSet.letters.subtracting(CharacterSet.nonBaseCharacters)
-    private let text: [Character]
+    private let text: [Unicode.Scalar]
     private let count: Int
     private var currentPosition: Int
-    private var currentCharacter: Character?
+    private var currentCharacter: Unicode.Scalar?
 
     // MARK: - Constants
 
     public init(_ text: String) {
-        self.text = Array(text)
+        self.text = Array(text.unicodeScalars)
         self.count = text.count
         currentPosition = 0
-        currentCharacter = text.isEmpty ? nil : text[text.startIndex]
+        currentCharacter = text.isEmpty ? nil : self.text[0]
     }
 
     // MARK: - Stream helpers
@@ -44,7 +44,7 @@ public class Lexer {
      Skips all the whitespace
      */
     private func skipWhitestace() {
-        while let character = currentCharacter, CharacterSet.whitespaces.contains(character.unicodeScalars.first!) {
+        while let character = currentCharacter, CharacterSet.whitespaces.contains(character) {
             advance()
         }
     }
@@ -53,7 +53,7 @@ public class Lexer {
      Skips all the newlines and whitespaces
      */
     private func skipNewlines() {
-        while let character = currentCharacter, CharacterSet.newlines.contains(character.unicodeScalars.first!) {
+        while let character = currentCharacter, CharacterSet.newlines.contains(character) {
             advance()
         }
     }
@@ -63,7 +63,7 @@ public class Lexer {
      Skips comments
      */
     private func skipComment() {
-        while let character = currentCharacter, !CharacterSet.newlines.contains(character.unicodeScalars.first!) {
+        while let character = currentCharacter, !CharacterSet.newlines.contains(character) {
             advance()
         }
     }
@@ -79,7 +79,7 @@ public class Lexer {
             return
         }
 
-        currentCharacter = text[text.index(text.startIndex, offsetBy: currentPosition)]
+        currentCharacter = text[currentPosition]
     }
 
     /**
@@ -87,14 +87,14 @@ public class Lexer {
 
      Returns: Character if not at the end of the text, nil otherwise
      */
-    private func peek() -> Character? {
+    private func peek() -> Unicode.Scalar? {
         let peekPosition = currentPosition + 1
 
         guard peekPosition < count else {
             return nil
         }
 
-        return text[text.index(text.startIndex, offsetBy: peekPosition)]
+        return text[peekPosition]
     }
 
     // MARK: - Parsing helpers
@@ -111,7 +111,7 @@ public class Lexer {
 
         // need to look ahead to define if we can use numbers
         strategyLookAhead: while i < count {
-            let character = text[text.index(text.startIndex, offsetBy: i)].unicodeScalars.first!
+            let character = text[i]
 
             switch strategy {
             case .integer:
@@ -187,7 +187,7 @@ public class Lexer {
                 return word()
             }
 
-            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) {
+            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character) {
                 lexem += String(character)
                 advance()
             }
@@ -197,7 +197,7 @@ public class Lexer {
                 advance()
             }
 
-            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) {
+            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character) {
                 lexem += String(character)
                 advance()
             }
@@ -208,7 +208,7 @@ public class Lexer {
                 return word()
             }
 
-            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) {
+            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character) {
                 lexem += String(character)
                 advance()
             }
@@ -221,12 +221,12 @@ public class Lexer {
 
             var nominator = ""
             var denominator = ""
-            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) {
+            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character) {
                 nominator += String(character)
                 advance()
             }
 
-            while  let character = currentCharacter, CharacterSet.whitespaces.contains(character.unicodeScalars.first!) {
+            while  let character = currentCharacter, CharacterSet.whitespaces.contains(character) {
                 advance()
             }
 
@@ -234,11 +234,11 @@ public class Lexer {
                 advance()
             }
 
-            while  let character = currentCharacter, CharacterSet.whitespaces.contains(character.unicodeScalars.first!) {
+            while  let character = currentCharacter, CharacterSet.whitespaces.contains(character) {
                 advance()
             }
 
-            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character.unicodeScalars.first!) {
+            while let character = currentCharacter, CharacterSet.decimalDigits.contains(character) {
                 denominator += String(character)
                 advance()
             }
@@ -253,7 +253,7 @@ public class Lexer {
 
     private func word() -> Token {
         var lexem = ""
-        while let character = currentCharacter, CharacterSet.alphanumerics.contains(character.unicodeScalars.first!) {
+        while let character = currentCharacter, CharacterSet.alphanumerics.contains(character) {
             lexem += String(character)
             advance()
         }
@@ -262,7 +262,7 @@ public class Lexer {
     
     private func punctuation() -> Token {
         var lexem = ""
-        while let character = currentCharacter, !["{", "}", "@", "%", "/", ":", ">", "|"].contains(character) && (CharacterSet.punctuationCharacters.contains(character.unicodeScalars.first!) || CharacterSet.symbols.contains(character.unicodeScalars.first!)) {
+        while let character = currentCharacter, !["{", "}", "@", "%", "/", ":", ">", "|"].contains(character) && (CharacterSet.punctuationCharacters.contains(character) || CharacterSet.symbols.contains(character)) {
             lexem += String(character)
             advance()
         }
@@ -270,7 +270,7 @@ public class Lexer {
     }
     
     private func whitespace() -> Token {
-        while let character = currentCharacter, CharacterSet.whitespaces.contains(character.unicodeScalars.first!) {
+        while let character = currentCharacter, CharacterSet.whitespaces.contains(character) {
             advance()
         }
         return .constant(.space)
@@ -285,17 +285,17 @@ public class Lexer {
      */
     public func getNextToken() -> Token {
         while let currentCharacter = currentCharacter {            
-            if CharacterSet.newlines.contains(currentCharacter.unicodeScalars.first!) {
+            if CharacterSet.newlines.contains(currentCharacter) {
                 skipNewlines()
                 return .eol
             }
 
-            if CharacterSet.whitespaces.contains(currentCharacter.unicodeScalars.first!) {
+            if CharacterSet.whitespaces.contains(currentCharacter) {
                 return whitespace()
             }
 
             // if the character is a digit, convert it to int, create an integer token and move position
-            if CharacterSet.decimalDigits.contains(currentCharacter.unicodeScalars.first!) {
+            if CharacterSet.decimalDigits.contains(currentCharacter) {
                 return number()
             }
 
@@ -362,11 +362,11 @@ public class Lexer {
                 }
             }
 
-            if CharacterSet.punctuationCharacters.contains(currentCharacter.unicodeScalars.first!) || CharacterSet.symbols.contains(currentCharacter.unicodeScalars.first!) {
+            if CharacterSet.punctuationCharacters.contains(currentCharacter) || CharacterSet.symbols.contains(currentCharacter) {
                 return punctuation()
             }
             
-            if CharacterSet.alphanumerics.contains(currentCharacter.unicodeScalars.first!) {
+            if CharacterSet.alphanumerics.contains(currentCharacter) {
                 return word()
             }            
         }
