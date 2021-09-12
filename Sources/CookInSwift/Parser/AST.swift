@@ -12,7 +12,7 @@ public protocol AST {}
 
 public enum ConstantNode: AST {
     case integer(Int)
-    case decimal(Float)
+    case decimal(Decimal)
     case fractional((Int, Int))
     case string(String)
 }
@@ -36,7 +36,7 @@ public struct ValuesNode: AST {
         values = [ConstantNode(value)]
     }
 
-    init(_ value: Float) {
+    init(_ value: Decimal) {
         values = [ConstantNode(value)]
     }
 
@@ -88,7 +88,7 @@ struct MetadataNode: AST {
         self.key = key
     }
 
-    init(_ key: String, _ value: Float) {
+    init(_ key: String, _ value: Decimal) {
         self.value = ValuesNode(ConstantNode.decimal(value))
         self.key = key
     }
@@ -125,7 +125,7 @@ struct AmountNode: AST {
         self.units = units
     }
 
-    init(quantity: Float, units: String = "") {
+    init(quantity: Decimal, units: String = "") {
         self.quantity = ValuesNode(ConstantNode.decimal(quantity))
         self.units = units
     }
@@ -183,7 +183,7 @@ struct TimerNode: AST {
         self.name = name
     }
 
-    init(quantity: Float, units: String, name: String = "") {
+    init(quantity: Decimal, units: String, name: String = "") {
         self.quantity = ValuesNode(ConstantNode.decimal(quantity))
         self.units = units
         self.name = name

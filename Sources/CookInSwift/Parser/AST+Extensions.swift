@@ -8,9 +8,11 @@
 
 import Foundation
 
-extension Float {
+extension Decimal {
     var cleanValue: String {
-        return self.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", self) : String(self)
+        let formatter = NumberFormatter()
+        formatter.maximumSignificantDigits = 2
+        return formatter.string(from: self as NSDecimalNumber)!
     }
 }
 
@@ -20,7 +22,7 @@ extension ConstantNode {
         self = .integer(value)
     }
 
-    init(_ value: Float) {
+    init(_ value: Decimal) {
         self = .decimal(value)
     }
 
@@ -59,17 +61,17 @@ extension ConstantNode: Equatable {
         case let (.fractional(left), .fractional(right)):
             return left.0 == right.0 && left.1 == right.1
         case let (.decimal(left), .integer(right)):
-            return left == Float(right)
+            return left == Decimal(right)
         case let (.integer(left), .decimal(right)):
-            return Float(left) == right
+            return Decimal(left) == right
         case let (.fractional(left), .integer(right)):
-            return Float(left.0/left.1) == Float(right)
+            return Decimal(left.0/left.1) == Decimal(right)
         case let (.fractional(left), .decimal(right)):
-            return Float(left.0/left.1) == Float(right)
+            return Decimal(left.0/left.1) == right
         case let (.integer(left), .fractional(right)):
-            return Float(left) == Float(right.0/right.1)
+            return Decimal(left) == Decimal(right.0/right.1)
         case let (.decimal(left), .fractional(right)):
-            return Float(left) == Float(right.0/right.1)
+            return left == Decimal(right.0/right.1)
         case (.string(_), _):
             return false
         case (_, .string(_)):

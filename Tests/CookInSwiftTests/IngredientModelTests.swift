@@ -68,6 +68,16 @@ class IngredientModelTests: XCTestCase {
         
         XCTAssertEqual(collection.description, "1.5 cups")
     }
+
+    func testFractionsQuantityDecimalTypes() {
+        let collection = IngredientAmountCollection()
+
+        collection.add(IngredientAmount(ConstantNode.fractional((1, 3)), "cup"))
+        collection.add(IngredientAmount(ConstantNode.integer(1), "cup"))
+
+
+        XCTAssertEqual(collection.description, "1.3 cups")
+    }
     
     func testWithPluralUnits() {
         let collection = IngredientAmountCollection()

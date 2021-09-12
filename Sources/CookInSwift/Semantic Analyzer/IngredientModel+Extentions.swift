@@ -65,7 +65,7 @@ extension IngredientAmountCollection {
 
         private var _i1: Array<IngredientAmount>.Iterator , _i2: Array<IngredientAmount>.Iterator
 
-        fileprivate init(_ amountsCountable: [String: Float], _ amountsUncountable: [String: String]) {
+        fileprivate init(_ amountsCountable: [String: Decimal], _ amountsUncountable: [String: String]) {
             _i1 = amountsCountable.map{ IngredientAmount(ConstantNode.decimal($1), $0) }.makeIterator()
             _i2 = amountsUncountable.map{ IngredientAmount(ConstantNode.string($1), $0) }.makeIterator()
         }

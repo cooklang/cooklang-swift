@@ -202,7 +202,7 @@ public class Lexer {
                 advance()
             }
 
-            return .constant(.decimal(Float(lexem)!))
+            return .constant(.decimal(Decimal(floatLiteral: Double(lexem)!)))
         case .integer:
             if let character = currentCharacter, character == "0" {
                 return word()

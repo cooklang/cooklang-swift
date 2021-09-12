@@ -31,7 +31,7 @@ public class IngredientAmount {
 
 
 public class IngredientAmountCollection {
-    var amountsCountable: [String: Float] = [:]
+    var amountsCountable: [String: Decimal] = [:]
     var amountsUncountable: [String: String] = [:]
 
     func add(_ amount: IngredientAmount) {
@@ -40,11 +40,11 @@ public class IngredientAmountCollection {
         // TODO
         switch amount.quantity.values.first {
         case let .integer(value):
-            amountsCountable[units] = amountsCountable[units, default: 0] + Float(value)
+            amountsCountable[units] = amountsCountable[units, default: 0] + Decimal(value)
         case let .decimal(value):
-            amountsCountable[units] = Float(amountsCountable[units, default: 0]) + value
+            amountsCountable[units] = amountsCountable[units, default: 0] + value
         case let .fractional(value):
-            amountsCountable[units] = amountsCountable[units, default: 0] + Float(value.0)/Float(value.1)
+            amountsCountable[units] = amountsCountable[units, default: 0] + Decimal(value.0)/Decimal(value.1)
         case let .string(value):
             amountsUncountable[amount.units] = value
         case .none:

@@ -117,7 +117,7 @@ public class ParsedTimer: DirectionItem {
         self.units = units
     }
 
-    init(_ quantity: Float, _ units: String) {
+    init(_ quantity: Decimal, _ units: String) {
         self.quantity = ValuesNode(quantity)
         self.units = units
     }

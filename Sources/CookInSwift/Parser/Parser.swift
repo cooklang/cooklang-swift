@@ -110,7 +110,7 @@ public class Parser {
                 items.append(String(value))
             case let .constant(.decimal(value)):
                 eat(.constant(.decimal(value)))
-                items.append(String(value))
+                items.append("\(value)")
             case let .constant(.fractional((nom, denom))):
                 eat(.constant(.fractional((nom, denom))))
                 items.append("\(nom)/\(denom)")

@@ -113,12 +113,12 @@ extension Constant: Literal {
             case let .integer(value):
                 return String(value)
             case let .decimal(value):
-                return String(value)
+                return "\(value)"
             case let .fractional((nominator, denominator)):
                 return "\(nominator)/\(denominator)"
             case let .string(value):
                 return value
-            case let .space:
+            case .space:
                 return " "
             }
         }
