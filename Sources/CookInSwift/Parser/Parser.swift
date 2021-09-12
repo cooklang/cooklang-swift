@@ -42,15 +42,15 @@ public class Parser {
         return tokens[tokenIndex + 1]
     }
 
-    public init(_ text: String) {
+    public init(_ tokens: [Token]) {
+        self.tokens = tokens
+    }
+
+    public static func parse(_ text: String) throws -> AST {
         let lexer = Lexer(text)
-        var token = lexer.getNextToken()
-        var all = [token]
-        while token != .eof {
-            token = lexer.getNextToken()
-            all.append(token)
-        }
-        tokens = all
+        let tokens = lexer.lex()
+        let parser = Parser(tokens)
+        return parser.parse()
     }
 
     // MARK: - Helpers
@@ -288,6 +288,7 @@ public class Parser {
 
             return value
         case .noBraces:
+//            TODO not stable place
             guard case let .constant(.string(value)) = currentToken else {
                 fatalError("String expected, got \(currentToken)")
             }

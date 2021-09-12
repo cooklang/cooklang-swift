@@ -18,8 +18,7 @@ class ParserTests: XCTestCase {
             Add a bit of chilli
             """
                 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
         
         let direction = DirectionNode("Add a bit of chilli")
         let steps = [StepNode(instructions: [direction])]
@@ -37,8 +36,7 @@ class ParserTests: XCTestCase {
             """
         
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [DirectionNode("Add a bit of chilli")]),
@@ -55,8 +53,7 @@ class ParserTests: XCTestCase {
             Add @chilli{3%items}, @ginger{10%g} and @milk{1%l}.
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [
@@ -79,8 +76,7 @@ class ParserTests: XCTestCase {
             @chilli{3%items}
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(3), units: "items"))])
@@ -96,8 +92,7 @@ class ParserTests: XCTestCase {
             @chilli{ 3 % items }
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(3), units: "items"))])
@@ -113,8 +108,7 @@ class ParserTests: XCTestCase {
             @chilli{%items}
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(1), units: "items"))])
@@ -132,8 +126,7 @@ class ParserTests: XCTestCase {
             @chilli{3}
             """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(3)))])
@@ -149,8 +142,7 @@ class ParserTests: XCTestCase {
             @chilli
             """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(1)))])
@@ -166,8 +158,7 @@ class ParserTests: XCTestCase {
             @5peppers
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "5peppers", amount: AmountNode(quantity: ConstantNode.integer(1)))])
@@ -183,8 +174,7 @@ class ParserTests: XCTestCase {
             @tipo 00 flour{250%g}
             """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "tipo 00 flour", amount: AmountNode(quantity: ConstantNode.integer(250), units: "g"))])
@@ -200,8 +190,7 @@ class ParserTests: XCTestCase {
             @hot chilli{3}
             """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "hot chilli", amount: AmountNode(quantity: ConstantNode.integer(3)))])
@@ -217,8 +206,7 @@ class ParserTests: XCTestCase {
             @water{7 k }
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "water", amount: AmountNode(quantity: ConstantNode.string("7 k")))])
@@ -234,8 +222,7 @@ class ParserTests: XCTestCase {
             @hot chilli{}
             """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "hot chilli", amount: AmountNode(quantity: ConstantNode.integer(1)))])
@@ -251,8 +238,7 @@ class ParserTests: XCTestCase {
             @chilli cut into pieces
             """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(1))),
@@ -270,8 +256,7 @@ class ParserTests: XCTestCase {
             @milk{1/2%cup}
             """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "milk", amount: AmountNode(quantity: ConstantNode.fractional((1, 2)), units: "cup"))])
@@ -287,8 +272,7 @@ class ParserTests: XCTestCase {
             @milk{01/2%cup}
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "milk", amount: AmountNode(quantity: ConstantNode.string("01/2"), units: "cup"))])
@@ -304,8 +288,7 @@ class ParserTests: XCTestCase {
             @milk{1 / 2 %cup}
             """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "milk", amount: AmountNode(quantity: ConstantNode.fractional((1, 2)), units: "cup"))])
@@ -321,8 +304,7 @@ class ParserTests: XCTestCase {
             knife cut about every 1/2 inches
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [DirectionNode("knife cut about every 1/2 inches")])
@@ -339,8 +321,7 @@ class ParserTests: XCTestCase {
             @chilli cut into pieces and @garlic
             """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "chilli", amount: AmountNode(quantity: ConstantNode.integer(1))),
@@ -359,8 +340,7 @@ class ParserTests: XCTestCase {
             Simmer in #pan for some time
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [
@@ -379,8 +359,7 @@ class ParserTests: XCTestCase {
             Fry in #frying pan{}
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [
@@ -398,8 +377,7 @@ class ParserTests: XCTestCase {
             Fry in #frying pan{ }
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [
@@ -417,8 +395,7 @@ class ParserTests: XCTestCase {
             Fry for ~{10%minutes}
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [
@@ -436,8 +413,7 @@ class ParserTests: XCTestCase {
             Fry for ~potato{42%minutes}
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [
@@ -455,8 +431,7 @@ class ParserTests: XCTestCase {
             Fry for ~{1.5%minutes}
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [
@@ -474,8 +449,7 @@ class ParserTests: XCTestCase {
             Fry for ~{1/2%hour}
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let steps = [
             StepNode(instructions: [
@@ -494,8 +468,7 @@ class ParserTests: XCTestCase {
             Heat 5L of water
             """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [DirectionNode("Heat 5L of water"),
@@ -512,8 +485,7 @@ class ParserTests: XCTestCase {
             Heat oven up to 200°C
             """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [DirectionNode("Heat oven up to 200°C"),
@@ -530,8 +502,7 @@ class ParserTests: XCTestCase {
             @thyme{few%springs}
             """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "thyme", amount: AmountNode(quantity: ConstantNode.string("few"), units: "springs"))])
@@ -544,8 +515,7 @@ class ParserTests: XCTestCase {
     func testComments() {
         let recipe = "// testing comments"
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [])
@@ -562,8 +532,7 @@ class ParserTests: XCTestCase {
         @thyme{2%springs}
         """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "thyme", amount: AmountNode(quantity: ConstantNode.integer(2), units: "springs"))])
@@ -580,8 +549,7 @@ class ParserTests: XCTestCase {
         @thyme{2%springs} // testing comments
         """
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [IngredientNode(name: "thyme", amount: AmountNode(quantity: ConstantNode.integer(2), units: "springs")), DirectionNode(" ")])
@@ -594,8 +562,7 @@ class ParserTests: XCTestCase {
     func testSlashInText() {
         let recipe = "Preheat the oven to 200℃/Fan 180°C."
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
             StepNode(instructions: [DirectionNode("Preheat the oven to 200℃/Fan 180°C.")])
@@ -608,8 +575,7 @@ class ParserTests: XCTestCase {
     func testMetadata() {
         let recipe = ">> sourced: babooshka"
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
                         
         let node = RecipeNode(steps: [], metadata: [MetadataNode("sourced", "babooshka")])
         
@@ -619,8 +585,7 @@ class ParserTests: XCTestCase {
     func testMetadataBreak() {
         let recipe = "hello >> sourced: babooshka"
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
         
         let steps = [
             StepNode(instructions: [DirectionNode("hello >> sourced: babooshka")])
@@ -633,8 +598,7 @@ class ParserTests: XCTestCase {
     func testMetadataMultiwordKey() {
         let recipe = ">> cooking time: 30 mins"
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let node = RecipeNode(steps: [], metadata: [MetadataNode("cooking time", "30 mins")])
 
@@ -644,8 +608,7 @@ class ParserTests: XCTestCase {
     func testMetadataMultiwordKeyWithSpaces() {
         let recipe = ">>cooking time    :30 mins"
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
 
         let node = RecipeNode(steps: [], metadata: [MetadataNode("cooking time", "30 mins")])
 
@@ -655,8 +618,7 @@ class ParserTests: XCTestCase {
     func testServings() {
         let recipe = ">> servings: 1|2|3"
         
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
         let node = RecipeNode(steps: [], metadata: [MetadataNode("servings", "1|2|3")])
         
         XCTAssertEqual(result, node)
@@ -668,8 +630,7 @@ class ParserTests: XCTestCase {
             >> Cook Time: 30 minutes
             """
 
-        let parser = Parser(recipe)
-        let result = parser.parse() as! RecipeNode
+        let result = try! Parser.parse(recipe) as! RecipeNode
         let node = RecipeNode(steps: [], metadata: [MetadataNode("Prep Time", "15 minutes"), MetadataNode("Cook Time", "30 minutes")])
 
         XCTAssertEqual(result, node)

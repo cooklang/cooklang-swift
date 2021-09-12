@@ -12,8 +12,7 @@ public class SemanticAnalyzer: Visitor {
     private var currentStep: SemanticStep = SemanticStep()
     private var currentRecipe: SemanticRecipe = SemanticRecipe()
 
-    public init() {
-    }
+    public init() {}
 
     public func analyze(node: AST) -> SemanticRecipe {
         visit(node: node)

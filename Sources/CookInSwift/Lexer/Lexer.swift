@@ -373,4 +373,15 @@ public class Lexer {
 
         return .eof
     }
+
+    public func lex() -> [Token] {
+        var token = getNextToken()
+        var all = [token]
+        while token != .eof {
+            token = getNextToken()
+            all.append(token)
+        }
+
+        return all
+    }
 }
