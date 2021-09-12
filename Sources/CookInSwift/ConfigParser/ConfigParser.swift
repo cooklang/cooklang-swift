@@ -49,8 +49,8 @@ func parseSectionHeader(_ line: String) -> String {
 }
 
 
-func parseLine(_ line: String) -> String {
-    return trim(String(line))
+func parseLine(_ line: String) -> [String] {
+    return String(line).components(separatedBy: "|").map{ trim($0) }
 }
 
 
@@ -64,7 +64,7 @@ public class ConfigParser {
 
     public func parse() -> CookConfig {
         let config = CookConfig()
-        var currentSectionName = "main"
+        var currentSectionName = "Main"
         for line in text.components(separatedBy: "\n") {
             let line = trim(line)
             if (line == "") { continue }
@@ -72,7 +72,9 @@ public class ConfigParser {
             if line.hasPrefix("[") && line.hasSuffix("]") {
                 currentSectionName = parseSectionHeader(line)
             } else {
-                config.add(item: parseLine(line), section: currentSectionName)
+                parseLine(line).forEach { item in
+                    config.add(item: item, section: currentSectionName)
+                }
             }
         }
 
