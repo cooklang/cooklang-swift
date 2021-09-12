@@ -278,7 +278,7 @@ class ParserTests: XCTestCase {
         ]
         let node = RecipeNode(steps: steps)
         
-        XCTAssertEqual(result.printTree(), node.printTree())
+        XCTAssertEqual(result, node)
     }
 
     func testFractionsLike() {
@@ -312,7 +312,7 @@ class ParserTests: XCTestCase {
         ]
         let node = RecipeNode(steps: steps)
         
-        XCTAssertEqual(result.printTree(), node.printTree())
+        XCTAssertEqual(result, node)
     }
 
     func testFractionsInDirections() {
@@ -329,7 +329,7 @@ class ParserTests: XCTestCase {
         ]
         let node = RecipeNode(steps: steps)
 
-        XCTAssertEqual(result.printTree(), node.printTree())
+        XCTAssertEqual(result, node)
     }
     
     

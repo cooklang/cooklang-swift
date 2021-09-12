@@ -6,6 +6,11 @@
 //  Copyright © 2020 Alexey Dubovskoy. All rights reserved.
 //
 
+// GRAMMAR
+// recipe: metadata step;
+// metadata: key value;
+//
+
 import Foundation
 
 enum TaggedParseStrategy {
@@ -16,6 +21,10 @@ enum TaggedParseStrategy {
 enum QuantityParseStrategy {
     case number
     case string
+}
+
+enum ParserError: Error {
+    case terminatorNotFound
 }
 
 public class Parser {
@@ -65,6 +74,27 @@ public class Parser {
     /**
 
      */
+    private func stringUntilTerminator(terminators: [Token]) throws -> String {
+        var parts: [String] = []
+
+        while true {
+            if terminators.contains(currentToken) {
+                break
+//                TODO should really be configurable, because in some cases we consider next @ to be a stopper
+            } else if currentToken == .eol || currentToken == .eof {
+                throw ParserError.terminatorNotFound
+            } else {
+                parts.append(currentToken.literal)
+                eat(currentToken)
+            }
+        }
+
+        return parts.joined().trimmingCharacters(in: CharacterSet.whitespaces)
+    }
+
+    /**
+
+     */
     private func direction() -> DirectionNode {
         var items: [String] = []
 
@@ -85,7 +115,14 @@ public class Parser {
                 eat(.constant(.fractional((nom, denom))))
                 items.append("\(nom)/\(denom)")
             case .tilde:
-                return DirectionNode(items.joined())
+                if case .constant(.string) = nextToken {
+                    return DirectionNode(items.joined())
+                } else if nextToken == .braces(.left) {
+                    return DirectionNode(items.joined())
+                } else {
+                    items.append(currentToken.literal)
+                    eat(currentToken)
+                }
             case .at, .hash:
                 if case .constant(.string) = nextToken {
                     return DirectionNode(items.joined())
@@ -168,7 +205,15 @@ public class Parser {
             }
 
         } else {
-            let value = stringUntilTerminator(terminators: [.percent, .braces(.right)])
+            var value = ""
+
+            do {
+                value = try stringUntilTerminator(terminators: [.percent, .braces(.right)])
+            } catch ParserError.terminatorNotFound {
+                print("woops")
+            } catch {
+                fatalError("Unexpected exception")
+            }
 
             if value != "" {
                 v.add(ConstantNode.string(value))
@@ -187,7 +232,7 @@ public class Parser {
     /**
 
      */
-    private func amount() -> AmountNode {
+    private func amount() throws -> AmountNode {
         eat(.braces(.left))
 
         let q = values()
@@ -197,7 +242,7 @@ public class Parser {
         if currentToken == .percent {
             eat(.percent)
 
-            units = stringUntilTerminator(terminators: [.braces(.right)])
+            units = try stringUntilTerminator(terminators: [.braces(.right)])
         }
 
         eat(.braces(.right))
@@ -205,26 +250,7 @@ public class Parser {
         return AmountNode(quantity: q, units: units)
     }
 
-    /**
 
-     */
-    private func stringUntilTerminator(terminators: [Token]) -> String {
-        var parts: [String] = []
-
-        while true {
-            if terminators.contains(currentToken) {
-                break
-            } else if currentToken == .eol || currentToken == .eof {
-                print("Unexpectd end of line or endo of file")
-                break
-            } else {
-                parts.append(currentToken.literal)
-                eat(currentToken)
-            }
-        }
-
-        return parts.joined().trimmingCharacters(in: CharacterSet.whitespaces)
-    }
 
     /**
 
@@ -250,7 +276,17 @@ public class Parser {
 
         switch strategy {
         case .withBraces:
-            return stringUntilTerminator(terminators: [.braces(.left)])
+            var value = ""
+
+            do {
+                value = try stringUntilTerminator(terminators: [.braces(.left)])
+            } catch ParserError.terminatorNotFound {
+                print("woops")
+            } catch {
+                fatalError("Unexpected exception")
+            }
+
+            return value
         case .noBraces:
             guard case let .constant(.string(value)) = currentToken else {
                 fatalError("String expected, got \(currentToken)")
@@ -274,7 +310,13 @@ public class Parser {
         var ingridientAmount = AmountNode(quantity: 1, units: "")
 
         if currentToken == .braces(.left) {
-            ingridientAmount = amount()
+            do {
+                ingridientAmount = try amount()
+            } catch ParserError.terminatorNotFound {
+                print("Warning: expected '}' but got end of line")
+            } catch {
+                fatalError("Unexpected exception")
+            }
         }
 
         return IngredientNode(name: name, amount: ingridientAmount)
@@ -291,7 +333,12 @@ public class Parser {
         if currentToken == .braces(.left) {
             eat(.braces(.left))
             ignoreWhitespace()
-            eat(.braces(.right))
+
+            if currentToken == .braces(.right) {
+                eat(.braces(.right))
+            } else {
+                print("Warning: expected '}' but got \(currentToken.literal)")
+            }
         }
 
         return EquipmentNode(name: name)
@@ -306,24 +353,52 @@ public class Parser {
         eat(.braces(.left))
         let quantity = values()
         eat(.percent)
-        let units = stringUntilTerminator(terminators: [.braces(.right)])
+
+        var units = ""
+
+        do {
+            units = try stringUntilTerminator(terminators: [.braces(.right)])
+        } catch ParserError.terminatorNotFound {
+            print("Warning: expected '}' but got end of line")
+            return TimerNode(quantity: "", units: "", name: "Invalid timer syntax")
+        } catch {
+            fatalError("Unexpected exception")
+        }
+
         eat(.braces(.right))
 
         return TimerNode(quantity: quantity, units: units, name: name)
     }
 
     /**
+        >> key: value
 
      */
     private func metadata() -> MetadataNode {
         eat(.chevron)
         eat(.chevron)
 
-        let key = stringUntilTerminator(terminators: [.colon])
+        var key = ""
+
+        do {
+            key = try stringUntilTerminator(terminators: [.colon])
+        } catch ParserError.terminatorNotFound {
+            return MetadataNode("Invalid key syntax", "Invalid value syntax")
+        } catch {
+            fatalError("Unexpected exception")
+        }
 
         eat(.colon)
 
-        let value = stringUntilTerminator(terminators: [.eol, .eof])
+        var value = ""
+
+        do {
+            value = try stringUntilTerminator(terminators: [.eol, .eof])
+        } catch ParserError.terminatorNotFound {
+//            TODO this is redundant
+        } catch {
+            fatalError("Unexpected exception")
+        }
 
         if currentToken == .eol {
             eat(.eol)

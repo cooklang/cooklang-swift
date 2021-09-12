@@ -205,6 +205,82 @@ class SemanticAnalyzerTests: XCTestCase {
 
     }
 
+    func testBrokenManti() {
+        let recipe =
+            """
+            > sdfsf: fff
+            >> fsdfd:::
+            >>:fdsfd
+            >>sfsdfd:
+            > > fsdf
+            Attach the dough @ hook > to the Kitchen Aid mixer. Mix the @milk{160g}, @ salt{1%tsp}, @egg{%large} and @water{180%}.
+
+            Add the @flour{530%g, continue mixing until the dough is smooth and flour is well incorporated. (Dough should not stick to your hands.)
+
+            Keep the dough //covered until ready to use.
+
+            Place @butter{%} into freezer. Cube @chicken > thighs{450%g} into small pieces. Chop @onion{1 really fine. Peel @potatoes{450%g} and cube into small pieces, place in bowl and cover with cold water, set aside.
+
+            Divide dough into two. Return # the one half | to the bowl : and cover >. Lightly flour the working surface. Roll out the dough into about 20" to 22" circle, adding flour as needed, it needs to be really thin. Fold the circle as if it's and accordion going back and forth. With a sharp knife cut about every 2 1/2 inches. Take the strips and stack them. When stacking, the strips will all be different lengths, stack them all starting at one end, not in the middle. Cut again about every 2 2/12 #inches{.
+
+            Lay out the squares. Some pieces may not be complete squares, edges, }just take{ two pieces and stick them together.
+
+            Finish the filling. Take out the butter from the freezer and either % grate or cube. Drain potatoes add to the bowl, add @ground coriander{1/2%tsp}, @ground cumin{1/4%tsp}, @black pepper{1/4%tsp}, minced @garlic{2%cloves} add chopped @parsley{1%bunch}. Mix everything.
+
+            >> Take spoonfuls of the filling and add to the ~center of the squares.
+
+            Hehe, ~ and # and @ here.
+
+            @
+
+            ~
+
+            #
+
+            Take a square, place one corner over the other ~and{%} pinch together. Take the other corner and repeat. Pinch together the four openings. Now take the two edges and pinch them together as well, placing over edge over the other.
+
+            Add water to a tiered steamer. Lay out Manti on tiers. Cover steamer and cook ~{20-25%minutes}. All steamers are different, check a Manti to see if it's ready. If using different meat, it'll need about 40 - 60 minutes.
+
+            Enjoy with butter and sour cream.
+            """
+
+
+        let analyzer = SemanticAnalyzer()
+
+        let parser = Parser(recipe)
+        let parsed = parser.parse()
+        let parsedRecipe = analyzer.analyze(node: parsed)
+
+        let text = parsedRecipe.steps.map{ step in
+            step.directions.map { $0.description }.joined()
+        }
+
+        XCTAssertEqual(parsedRecipe.metadata, ["sfsdfd": "",
+                                               "Invalid key syntax": "Invalid value syntax",
+                                               "": "fdsfd",
+                                               "fsdfd": "::"])
+
+        XCTAssertEqual(text, ["> sdfsf: fff",
+                              "> > fsdf",
+                              "Attach the dough @ hook > to the Kitchen Aid mixer. Mix the milk, @ salt{1%tsp}, egg and water.",
+                              "Add the flour",
+                              "Keep the dough ",
+                              "Place butter into freezer. Cube chicken > thighs into small pieces. Chop onion and cube into small pieces, place in bowl and cover with cold water, set aside.",
+                              "Divide dough into two. Return # the one half | to the bowl : and cover >. Lightly flour the working surface. Roll out the dough into about 20\" to 22\" circle, adding flour as needed, it needs to be really thin. Fold the circle as if it\'s and accordion going back and forth. With a sharp knife cut about every 2 1/2 inches. Take the strips and stack them. When stacking, the strips will all be different lengths, stack them all starting at one end, not in the middle. Cut again about every 2 2/12 inches.",
+                              "Lay out the squares. Some pieces may not be complete squares, edges, }just take{ two pieces and stick them together.",
+                              "Finish the filling. Take out the butter from the freezer and either % grate or cube. Drain potatoes add to the bowl, add ground coriander, ground cumin, black pepper, minced garlic add chopped parsley. Mix everything.",
+                              "Hehe, ~ and # and @ here.",
+                              "@",
+                              "~",
+                              "#",
+                              "Take a square, place one corner over the other 1  pinch together. Take the other corner and repeat. Pinch together the four openings. Now take the two edges and pinch them together as well, placing over edge over the other.",
+                              "Add water to a tiered steamer. Lay out Manti on tiers. Cover steamer and cook 20-25 minutes. All steamers are different, check a Manti to see if it\'s ready. If using different meat, it\'ll need about 40 - 60 minutes.",
+                              "Enjoy with butter and sour cream."]
+
+        )
+
+    }
+
 
     
 }
