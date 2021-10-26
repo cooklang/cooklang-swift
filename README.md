@@ -41,3 +41,11 @@ func parseConfig(_ content: String) -> CookConfig {
     return parser.parse()
 }
 ```
+
+## Development
+
+### Codespaces
+
+- We are using the default Swift Community template from [microsoft/vscode-dev-containers](https://github.com/microsoft/vscode-dev-containers/tree/main/containers/swift)
+  - build the package: `swift build --enable-test-discovery`
+  - run the tests: `swift test --enable-test-discovery`
