@@ -9,8 +9,49 @@
 import Foundation
 @testable import CookInSwift
 import XCTest
+import Yams
+
+struct CookTestDefinition: Codable {
+    var p: String
+}
+
 
 class ParserTests: XCTestCase {
+
+//    var title: String!
+    var recipe: String!
+    var node: RecipeNode!
+
+    override class var defaultTestSuite: XCTestSuite {
+        let suite = XCTestSuite(forTestCaseClass: ParserTests.self)
+        let thisSourceFile = URL(fileURLWithPath: #file)
+        let thisDirectory = thisSourceFile.deletingLastPathComponent()
+        let resourceURL = thisDirectory.appendingPathComponent("ParserTestCases.yaml")
+        let encodedYAML = try! String(contentsOfFile: resourceURL.path, encoding: String.Encoding.utf8)
+        let decoder = YAMLDecoder()
+        let decoded = try! decoder.decode(CookTestDefinition.self, from: encodedYAML)
+
+        [1,2,3].forEach { size in
+            // Generate a test for our specific selector
+            let test = ParserTests(selector: #selector(yamlTests))
+//            test.name = "testBasicDirection"
+            test.recipe = "Add a bit of chilli"
+            let direction = DirectionNode("Add a bit of chilli")
+            let steps = [StepNode(instructions: [direction])]
+            let node = RecipeNode(steps: steps)
+            test.node = node
+
+            // Add it to the suite, and the defaults handle the rest
+            suite.addTest(test)
+        }
+        return suite
+    }
+
+    @objc func yamlTests() {
+        let result = try! Parser.parse(recipe) as! RecipeNode
+
+        XCTAssertEqual(result, node)
+    }
  
     func testBasicDirection() {
         let recipe =

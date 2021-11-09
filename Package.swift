@@ -11,6 +11,7 @@ let package = Package(
             targets: ["CookInSwift"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6")
     ],
     targets: [
         .target(
@@ -18,6 +19,7 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "CookInSwiftTests",
-            dependencies: ["CookInSwift"]),
+            dependencies: ["CookInSwift", "Yams"]
+        ),
     ]
 )

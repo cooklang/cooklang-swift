@@ -1,0 +1,51 @@
+testBasicDirection:
+  source: |
+    Add a bit of chilli
+  result:
+    steps:
+      -
+        - type: direction
+          value: Add a bit of chilli
+
+testMultiLineDirections:
+  source: |
+    Add a bit of chilli
+
+    Add a bit of hummus
+  result:
+    steps:
+      -
+        - type: direction
+          value: Add a bit of chilli
+        - type: direction
+          value: Add a bit of hummus
+
+
+testDirectionWithIngrident:
+  source: |
+    Add @chilli{3%items}, @ginger{10%g} and @milk{1%l}.
+  result:
+    steps:
+      -
+        - type: direction
+          value: "Add "
+        - type: ingredient
+          name: chilli
+          amount: 3
+          units: items
+        - type: direction
+          value: ", "
+        - type: ingredient
+          name: ginger
+          amount: 10
+          units: g
+        - type: direction
+          value: " and "
+        - type: ingredient
+          name: milk
+          amount: 1
+          units: l
+        - type: direction
+          value: "."
+
+
