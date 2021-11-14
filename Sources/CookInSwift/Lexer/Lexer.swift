@@ -33,7 +33,7 @@ public class Lexer {
 
     public init(_ text: String) {
         self.text = Array(text.unicodeScalars)
-        self.count = text.count
+        self.count = self.text.count
         currentPosition = 0
         currentCharacter = text.isEmpty ? nil : self.text[0]
     }
