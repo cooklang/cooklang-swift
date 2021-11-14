@@ -31,6 +31,17 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
+
+    func testWindowsNewLineInput() {
+        let input = "abc\r\ndef\r\nghi"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
+        XCTAssertEqual(lexer.getNextToken(), .eol)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("def")))
+        XCTAssertEqual(lexer.getNextToken(), .eol)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("ghi")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
     
     func testMultipleNewLinesInput() {
         let input = "   \n\n    "
