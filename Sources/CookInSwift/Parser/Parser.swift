@@ -126,6 +126,8 @@ public class Parser {
             case .at, .hash:
                 if case .constant(.string) = nextToken {
                     return DirectionNode(items.joined())
+                } else if case .constant(.integer) = nextToken {
+                    return DirectionNode(items.joined())
                 } else {
                     items.append(currentToken.literal)
                     eat(currentToken)
