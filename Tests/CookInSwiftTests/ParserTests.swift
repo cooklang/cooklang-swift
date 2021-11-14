@@ -231,6 +231,42 @@ class ParserTests: XCTestCase {
         
         XCTAssertEqual(result, node)
     }
+
+    func testIngredientMultipleWordsWithLeadingNumber() {
+        let recipe =
+            """
+            Top with @1000 island dressing{ }
+            """
+
+        let result = try! Parser.parse(recipe) as! RecipeNode
+
+        let steps = [
+            StepNode(instructions: [
+                    DirectionNode("Top with "),
+                    IngredientNode(name: "1000 island dressing", amount: AmountNode(quantity: ConstantNode.integer(1)))]),
+        ]
+        let node = RecipeNode(steps: steps)
+
+        XCTAssertEqual(result, node)
+    }
+
+    func testIngredientWithEmoji() {
+        let recipe =
+            """
+            Add some @🧂
+            """
+
+        let result = try! Parser.parse(recipe) as! RecipeNode
+
+        let steps = [
+            StepNode(instructions: [
+                    DirectionNode("Add some "),
+                    IngredientNode(name: "🧂", amount: AmountNode(quantity: ConstantNode.integer(1)))]),
+        ]
+        let node = RecipeNode(steps: steps)
+
+        XCTAssertEqual(result, node)
+    }
     
     func testIngridentWithoutStopper() {
         let recipe =
@@ -383,6 +419,24 @@ class ParserTests: XCTestCase {
             StepNode(instructions: [
                     DirectionNode("Fry in "),
                     EquipmentNode(name: "frying pan")]),
+        ]
+        let node = RecipeNode(steps: steps)
+
+        XCTAssertEqual(result, node)
+    }
+
+    func testEquipmentMultipleWordsWithLeadingNumber() {
+        let recipe =
+            """
+            Fry in #7-inch nonstick frying pan{ }
+            """
+
+        let result = try! Parser.parse(recipe) as! RecipeNode
+
+        let steps = [
+            StepNode(instructions: [
+                    DirectionNode("Fry in "),
+                    EquipmentNode(name: "7-inch nonstick frying pan")]),
         ]
         let node = RecipeNode(steps: steps)
 
