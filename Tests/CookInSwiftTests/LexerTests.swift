@@ -58,6 +58,13 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("abc")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
+
+    func testEmoji() {
+        let input = "🍚"
+        let lexer = Lexer(input)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("🍚")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
     
     func testConcessiveStrings() {
         let input = "abc xyz"
