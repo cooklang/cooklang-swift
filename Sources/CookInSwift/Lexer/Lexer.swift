@@ -262,7 +262,7 @@ public class Lexer {
     
     private func punctuation() -> Token {
         var lexem = ""
-        while let character = currentCharacter, !["{", "}", "@", "%", "/", ":", ">", "|"].contains(character) && (CharacterSet.punctuationCharacters.contains(character) || CharacterSet.symbols.contains(character)) {
+        while let character = currentCharacter, !["{", "}", "@", "%", ":", ">", "|"].contains(character) && (CharacterSet.punctuationCharacters.contains(character) || CharacterSet.symbols.contains(character)) {
             lexem += String(character)
             advance()
         }
@@ -344,21 +344,21 @@ public class Lexer {
                 return .tilde
             }
             
-            if currentCharacter == "/" {
+            if currentCharacter == "-" {
                 let nextCharacter = peek()
                 
                 advance()
                 
                 if let unwrapped = nextCharacter {
-                    if unwrapped == "/" {
+                    if unwrapped == "-" {
                         advance()
                         skipComment()
                         return .eol
                     } else {
-                        return .constant(.string("/"))
+                        return .constant(.string("-"))
                     }
                 } else {
-                    return .constant(.string("/"))
+                    return .constant(.string("-"))
                 }
             }
 

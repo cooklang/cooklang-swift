@@ -289,7 +289,7 @@ class LexerTests: XCTestCase {
     }
     
     func testComments() {
-        let input = "// testing comments"
+        let input = "-- testing comments"
         let lexer = Lexer(input)
                 
         XCTAssertEqual(lexer.getNextToken(), .eol)
@@ -297,12 +297,12 @@ class LexerTests: XCTestCase {
     }
     
     func testSlashLast() {
-        let input = "onions /"
+        let input = "onions -"
         let lexer = Lexer(input)
         
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("onions")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.space))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string("/")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("-")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
     
@@ -319,8 +319,7 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("to")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.integer(200)))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string("℃")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string("/")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("℃/")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("Fan")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.integer(180)))
