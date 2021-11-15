@@ -608,7 +608,7 @@ class ParserTests: XCTestCase {
     }
     
     func testComments() {
-        let recipe = "// testing comments"
+        let recipe = "-- testing comments"
         
         let result = try! Parser.parse(recipe) as! RecipeNode
                 
@@ -623,7 +623,7 @@ class ParserTests: XCTestCase {
     func testCommentsWithIngredients() {
         let recipe =
         """
-        // testing comments
+        -- testing comments
         @thyme{2%springs}
         """
         
@@ -641,7 +641,7 @@ class ParserTests: XCTestCase {
     func testCommentsAfterIngredients() {
         let recipe =
         """
-        @thyme{2%springs} // testing comments
+        @thyme{2%springs} -- testing comments
         """
         
         let result = try! Parser.parse(recipe) as! RecipeNode
