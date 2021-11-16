@@ -213,7 +213,7 @@ class SemanticAnalyzerTests: XCTestCase {
 
             Add the @flour{530%g, continue mixing until the dough is smooth and flour is well incorporated. (Dough should not stick to your hands.)
 
-            Keep the dough //covered until ready to use.
+            Keep the dough --covered until ready to use.
 
             Place @butter{%} into freezer. Cube @chicken > thighs{450%g} into small pieces. Chop @onion{1 really fine. Peel @potatoes{450%g} and cube into small pieces, place in bowl and cover with cold water, set aside.
 

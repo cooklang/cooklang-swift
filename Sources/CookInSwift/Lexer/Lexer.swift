@@ -69,6 +69,24 @@ public class Lexer {
     }
 
     /**
+     Skips block comments
+     */
+    private func skipBlockComment() {
+        var prevCharacter = Unicode.Scalar("");
+
+        while let character = currentCharacter {
+            if prevCharacter == "-" && character == "]" {
+                advance()
+
+                return
+            }
+
+            prevCharacter = character
+            advance()
+        }
+    }
+
+    /**
      Advances by one character forward, sets the current character (if still any available)
      */
     private func advance() {
@@ -262,7 +280,7 @@ public class Lexer {
     
     private func punctuation() -> Token {
         var lexem = ""
-        while let character = currentCharacter, !["{", "}", "@", "%", "/", ":", ">", "|"].contains(character) && (CharacterSet.punctuationCharacters.contains(character) || CharacterSet.symbols.contains(character)) {
+        while let character = currentCharacter, !["{", "}", "@", "%", ":", ">", "|"].contains(character) && (CharacterSet.punctuationCharacters.contains(character) || CharacterSet.symbols.contains(character)) {
             lexem += String(character)
             advance()
         }
@@ -299,6 +317,24 @@ public class Lexer {
                 return number()
             }
 
+            if currentCharacter == "[" {
+                let nextCharacter = peek()
+
+                advance()
+
+                if let unwrapped = nextCharacter {
+                    if unwrapped == "-" {
+                        advance()
+                        skipBlockComment()
+                        continue
+                    } else {
+                        return .constant(.string("["))
+                    }
+                } else {
+                    return .constant(.string("["))
+                }
+            }
+
             if currentCharacter == "@" {
                 advance()
                 return .at
@@ -311,6 +347,7 @@ public class Lexer {
             
             if currentCharacter == "{" {
                 advance()
+
                 return .braces(.left)
             }
 
@@ -344,21 +381,21 @@ public class Lexer {
                 return .tilde
             }
             
-            if currentCharacter == "/" {
+            if currentCharacter == "-" {
                 let nextCharacter = peek()
                 
                 advance()
                 
                 if let unwrapped = nextCharacter {
-                    if unwrapped == "/" {
+                    if unwrapped == "-" {
                         advance()
                         skipComment()
                         return .eol
                     } else {
-                        return .constant(.string("/"))
+                        return .constant(.string("-"))
                     }
                 } else {
-                    return .constant(.string("/"))
+                    return .constant(.string("-"))
                 }
             }
 

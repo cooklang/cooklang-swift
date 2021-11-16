@@ -289,25 +289,73 @@ class LexerTests: XCTestCase {
     }
     
     func testComments() {
-        let input = "// testing comments"
+        let input = "-- testing comments"
         let lexer = Lexer(input)
                 
         XCTAssertEqual(lexer.getNextToken(), .eol)
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
+
+    func testBlockComments() {
+        let input = "visible [- hidden -] visible"
+        let lexer = Lexer(input)
+
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testBlockCommentsMultiline() {
+        let input = """
+        visible [- hidden
+        hidden
+        hidden -] visible
+        """
+        let lexer = Lexer(input)
+
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testBlockCommentsMultilineUnfinished() {
+        let input = """
+        visible [- hidden
+        hidden
+        hidden
+        """
+        let lexer = Lexer(input)
+
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testBlockCommentsUnfinished() {
+        let input = "visible [- hidden"
+        let lexer = Lexer(input)
+
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
     
-    func testSlashLast() {
-        let input = "onions /"
+    func testDashLast() {
+        let input = "onions -"
         let lexer = Lexer(input)
         
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("onions")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.space))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string("/")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("-")))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
     
-    func testSlashInText() {
-        let input = "Preheat the oven to 200℃/Fan 180°C."
+    func testDashInText() {
+        let input = "Preheat the oven to 200℃-Fan 180°C."
         let lexer = Lexer(input)
         
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("Preheat")))
@@ -319,9 +367,32 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("to")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.integer(200)))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string("℃")))
-        XCTAssertEqual(lexer.getNextToken(), .constant(.string("/")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("℃-")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("Fan")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.integer(180)))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("°")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("C")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string(".")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testSquareInText() {
+        let input = "Preheat the oven to 200℃[Fan] 180°C."
+        let lexer = Lexer(input)
+
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("Preheat")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("the")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("oven")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("to")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.integer(200)))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("℃[")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("Fan")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("]")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.integer(180)))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("°")))
