@@ -4,7 +4,7 @@ testBasicDirection:
   result:
     steps:
       -
-        - type: direction
+        - type: text
           value: Add a bit of chilli
 
 testMultiLineDirections:
@@ -15,9 +15,10 @@ testMultiLineDirections:
   result:
     steps:
       -
-        - type: direction
+        - type: text
           value: Add a bit of chilli
-        - type: direction
+      -
+        - type: text
           value: Add a bit of hummus
 
 
@@ -27,25 +28,25 @@ testDirectionWithIngrident:
   result:
     steps:
       -
-        - type: direction
+        - type: text
           value: "Add "
         - type: ingredient
           name: chilli
-          amount: 3
+          quantity: 3
           units: items
-        - type: direction
+        - type: text
           value: ", "
         - type: ingredient
           name: ginger
-          amount: 10
+          quantity: 10
           units: g
-        - type: direction
+        - type: text
           value: " and "
         - type: ingredient
           name: milk
-          amount: 1
+          quantity: 1
           units: l
-        - type: direction
+        - type: text
           value: "."
 
 

@@ -11,38 +11,153 @@ import Foundation
 import XCTest
 import Yams
 
-struct CookTestDefinition: Codable {
-    var p: String
+enum QuantityType: Decodable {
+  case int(Int)
+  case string(String)
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.singleValueContainer()
+    do {
+      self = try .int(container.decode(Int.self))
+    } catch DecodingError.typeMismatch {
+      do {
+        self = try .string(container.decode(String.self))
+      } catch DecodingError.typeMismatch {
+        throw DecodingError.typeMismatch(QuantityType.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Encoded payload not of an expected type"))
+      }
+    }
+  }
+}
+
+struct CookTestDirectionItem: Decodable {
+    var type: String
+    var name: String?
+    var quantity: QuantityType?
+    var units: String?
+    var value: String?
+
+    init(type: String, name: String? = nil, quantity: QuantityType? = nil, units: String? = nil, value: String? = nil) {
+        self.type = type
+        self.name = name
+        self.quantity = quantity
+        self.units = units
+        self.value = value
+    }
+}
+
+struct CookTestStepDefinition {
+    var directions: [CookTestDirectionItem]
+}
+
+struct CookTestResultDefinition {
+    var steps: [CookTestStepDefinition]
+}
+
+extension CookTestResultDefinition: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case steps
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        var stepsContainer = try container.nestedUnkeyedContainer(forKey: .steps)
+
+        steps = []
+
+        while !stepsContainer.isAtEnd {
+            var stepContainer = try stepsContainer.nestedUnkeyedContainer()
+            var directions: [CookTestDirectionItem] = []
+            while !stepContainer.isAtEnd {
+                let direction = try stepContainer.decode(CookTestDirectionItem.self)
+                directions.append(direction)
+            }
+            steps.append(CookTestStepDefinition(directions: directions))
+        }
+    }
+}
+
+struct CookTestDefinition: Decodable {
+    var name: String?
+    var source: String
+    var result: CookTestResultDefinition
+}
+
+struct CookTestSuiteDefinition {
+    var tests: [CookTestDefinition]
+}
+
+extension CookTestSuiteDefinition: Decodable {
+
+    struct DirectoryKeys: CodingKey {
+        var intValue: Int?
+
+        init?(intValue: Int) {
+            return nil
+        }
+
+        var stringValue: String
+        init?(stringValue: String) {
+            self.stringValue = stringValue
+        }
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: DirectoryKeys.self)
+
+        tests = []
+
+        try container.allKeys.forEach { key in
+            var testCase = try container.decode(CookTestDefinition.self, forKey: key)
+            testCase.name = key.stringValue
+            tests.append(testCase)
+        }
+    }
 }
 
 
 class ParserTests: XCTestCase {
 
-//    var title: String!
     var recipe: String!
     var node: RecipeNode!
 
     override class var defaultTestSuite: XCTestSuite {
-        let suite = XCTestSuite(forTestCaseClass: ParserTests.self)
+        let suite = XCTestSuite(forTestCaseClass: self)
         let thisSourceFile = URL(fileURLWithPath: #file)
         let thisDirectory = thisSourceFile.deletingLastPathComponent()
         let resourceURL = thisDirectory.appendingPathComponent("ParserTestCases.yaml")
-        let encodedYAML = try! String(contentsOfFile: resourceURL.path, encoding: String.Encoding.utf8)
-        let decoder = YAMLDecoder()
-        let decoded = try! decoder.decode(CookTestDefinition.self, from: encodedYAML)
+        let yaml = try! String(contentsOfFile: resourceURL.path, encoding: String.Encoding.utf8)
+        let definitions = try! YAMLDecoder().decode(CookTestSuiteDefinition.self, from: yaml)
 
-        [1,2,3].forEach { size in
+        definitions.tests.forEach { test in
             // Generate a test for our specific selector
-            let test = ParserTests(selector: #selector(yamlTests))
+            let t = ParserTests(selector: #selector(yamlTests))
 //            test.name = "testBasicDirection"
-            test.recipe = "Add a bit of chilli"
-            let direction = DirectionNode("Add a bit of chilli")
-            let steps = [StepNode(instructions: [direction])]
-            let node = RecipeNode(steps: steps)
-            test.node = node
+            t.recipe = test.source
+            var steps: [StepNode] = []
+            test.result.steps.forEach { step in
+                var directions: [AST] = []
+                step.directions.forEach { direction in
+                    switch direction.type {
+                    case "text":
+                        directions.append(DirectionNode(direction.value!))
+                    case "ingredient":
+                        directions.append(IngredientNode(name: direction.name!, amount: AmountNode(quantity: direction.quantity!, units: direction.units!)))
+                    case "cookware":
+                        directions.append(EquipmentNode(name: direction.name!, amount: AmountNode(quantity: direction.quantity!, units: direction.units!)))
+                    case "timer":
+                        directions.append(TimerNode(name: direction.name!, amount: AmountNode(quantity: direction.quantity!, units: direction.units!)))
+                    default:
+                        print("Unknown type \(direction.type)")
+                    }
+                }
+
+                steps.append(StepNode(instructions: directions))
+            }
+//            TODO support metadata
+            t.node = RecipeNode(steps: steps)
 
             // Add it to the suite, and the defaults handle the rest
-            suite.addTest(test)
+            suite.addTest(t)
         }
         return suite
     }
