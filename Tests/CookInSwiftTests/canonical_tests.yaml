@@ -504,7 +504,6 @@ tests:
             - type: text
               value: "Fry for "
             - type: timer
-
               quantity: 1.5
               units: "minutes"
               name: ""
@@ -520,7 +519,6 @@ tests:
             - type: text
               value: "Fry for "
             - type: timer
-
               quantity: 0.5
               units: "hour"
               name: ""
@@ -536,7 +534,6 @@ tests:
             - type: text
               value: "Fry for "
             - type: timer
-
               quantity: 10
               units: "minutes"
               name: ""
@@ -552,7 +549,6 @@ tests:
             - type: text
               value: "Fry for "
             - type: timer
-
               quantity: 42
               units: "minutes"
               name: "potato"
