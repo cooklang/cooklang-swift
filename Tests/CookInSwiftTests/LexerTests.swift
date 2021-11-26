@@ -342,6 +342,54 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
+
+    func testBlockComments() {
+        let input = "visible [- hidden -] visible"
+        let lexer = Lexer(input)
+
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testBlockCommentsMultiline() {
+        let input = """
+        visible [- hidden
+        hidden
+        hidden -] visible
+        """
+        let lexer = Lexer(input)
+
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testBlockCommentsMultilineUnfinished() {
+        let input = """
+        visible [- hidden
+        hidden
+        hidden
+        """
+        let lexer = Lexer(input)
+
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testBlockCommentsUnfinished() {
+        let input = "visible [- hidden"
+        let lexer = Lexer(input)
+
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
     
     func testDashLast() {
         let input = "onions -"

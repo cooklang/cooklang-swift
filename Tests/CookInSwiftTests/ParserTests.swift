@@ -13,6 +13,6 @@ import XCTest
 class ParserTests: XCTestCase {
     
 //    TODO add tests for errors and edge-cases
-// TODO spaces in all possible random places
+//    TODO spaces in all possible random places
 //    special symbols, quotes
 }
