@@ -291,8 +291,7 @@ class LexerTests: XCTestCase {
     func testComments() {
         let input = "-- testing comments"
         let lexer = Lexer(input)
-                
-        XCTAssertEqual(lexer.getNextToken(), .eol)
+
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
 

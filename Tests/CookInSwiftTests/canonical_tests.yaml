@@ -22,6 +22,7 @@ tests:
     testCommentsAfterIngredients:
       source: |
         @thyme{2%springs} -- testing comments
+        and some text
       result:
         steps:
           -
@@ -31,6 +32,9 @@ tests:
               units: "springs"
             - type: text
               value: " "
+          -
+            - type: text
+              value: "and some text"
         metadata: []
 
 

@@ -56,6 +56,7 @@ class ParserCanonicalTests: XCTestCase {
             let recipe =
                 """
                 @thyme{2%springs} -- testing comments
+                and some text
                 """
 
             let result = try! Parser.parse(recipe) as! RecipeNode
@@ -64,6 +65,9 @@ class ParserCanonicalTests: XCTestCase {
                 StepNode(instructions: [
                     IngredientNode(name: "thyme", amount: AmountNode(quantity: 2, units: "springs")),
                     DirectionNode(" "),
+                ]),
+                StepNode(instructions: [
+                    DirectionNode("and some text"),
                 ]),
             ]
 
