@@ -134,9 +134,11 @@ struct IngredientNode: AST {
 
 struct EquipmentNode: AST {
     let name: String
+    let quantity: ValuesNode?
 
-    init(name: String) {
+    init(name: String, quantity: ValuesNode? = nil) {
         self.name = name
+        self.quantity = quantity
     }
 }
 
