@@ -62,7 +62,7 @@ class IngredientModelTests: XCTestCase {
     func testFractionsQuantityTypes() {
         let collection = IngredientAmountCollection()
                 
-        collection.add(IngredientAmount(ConstantNode.fractional((1, 2)), "cup"))
+        collection.add(IngredientAmount(ConstantNode.decimal(0.5), "cup"))
         collection.add(IngredientAmount(ConstantNode.integer(1), "cup"))
             
         
@@ -72,7 +72,7 @@ class IngredientModelTests: XCTestCase {
     func testFractionsQuantityDecimalTypes() {
         let collection = IngredientAmountCollection()
 
-        collection.add(IngredientAmount(ConstantNode.fractional((1, 3)), "cup"))
+        collection.add(IngredientAmount(ConstantNode.decimal(Decimal(1) / Decimal(3)), "cup"))
         collection.add(IngredientAmount(ConstantNode.integer(1), "cup"))
 
 

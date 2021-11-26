@@ -295,7 +295,7 @@ class ParserTests: XCTestCase {
         let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
-            StepNode(instructions: [IngredientNode(name: "milk", amount: AmountNode(quantity: ConstantNode.fractional((1, 2)), units: "cup"))])
+            StepNode(instructions: [IngredientNode(name: "milk", amount: AmountNode(quantity: 0.5, units: "cup"))])
         ]
         let node = RecipeNode(steps: steps)
         
@@ -327,7 +327,7 @@ class ParserTests: XCTestCase {
         let result = try! Parser.parse(recipe) as! RecipeNode
                 
         let steps = [
-            StepNode(instructions: [IngredientNode(name: "milk", amount: AmountNode(quantity: ConstantNode.fractional((1, 2)), units: "cup"))])
+            StepNode(instructions: [IngredientNode(name: "milk", amount: AmountNode(quantity: 0.5, units: "cup"))])
         ]
         let node = RecipeNode(steps: steps)
         
@@ -508,7 +508,7 @@ class ParserTests: XCTestCase {
         let steps = [
             StepNode(instructions: [
                     DirectionNode("Fry for "),
-                        TimerNode(quantity: (1,2), units: "hour")]),
+                    TimerNode(quantity: 0.5, units: "hour")]),
         ]
         let node = RecipeNode(steps: steps)
 

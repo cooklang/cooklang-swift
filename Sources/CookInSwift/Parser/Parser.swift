@@ -198,7 +198,7 @@ public class Parser {
 
             case let .constant(.fractional((n, d))):
                 eat(.constant(.fractional((n, d))))
-                v.add(ConstantNode.fractional((n, d)))
+                v.add(ConstantNode.decimal(Decimal(n) / Decimal(d)))
 
             default:
                 if !(currentToken == .braces(.right) || currentToken == .percent) {
