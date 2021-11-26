@@ -390,7 +390,7 @@ public class Lexer {
                     if unwrapped == "-" {
                         advance()
                         skipComment()
-                        return .eol
+                        continue
                     } else {
                         return .constant(.string("-"))
                     }

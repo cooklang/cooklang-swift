@@ -13,7 +13,6 @@ public protocol AST {}
 public enum ConstantNode: AST {
     case integer(Int)
     case decimal(Decimal)
-    case fractional((Int, Int))
     case string(String)
 }
 
@@ -37,10 +36,6 @@ public struct ValuesNode: AST {
     }
 
     init(_ value: Decimal) {
-        values = [ConstantNode(value)]
-    }
-
-    init(_ value: (Int, Int)) {
         values = [ConstantNode(value)]
     }
 
@@ -93,11 +88,6 @@ struct MetadataNode: AST {
         self.key = key
     }
 
-    init(_ key: String, value: (Int, Int)) {
-        self.value = ValuesNode(ConstantNode.fractional(value))
-        self.key = key
-    }
-
 }
 
 
@@ -130,10 +120,6 @@ struct AmountNode: AST {
         self.units = units
     }
 
-    init(quantity: (Int, Int), units: String = "") {
-        self.quantity = ValuesNode(ConstantNode.fractional(quantity))
-        self.units = units
-    }
 }
 
 struct IngredientNode: AST {
@@ -148,9 +134,11 @@ struct IngredientNode: AST {
 
 struct EquipmentNode: AST {
     let name: String
+    let quantity: ValuesNode?
 
-    init(name: String) {
+    init(name: String, quantity: ValuesNode? = nil) {
         self.name = name
+        self.quantity = quantity
     }
 }
 
@@ -185,12 +173,6 @@ struct TimerNode: AST {
 
     init(quantity: Decimal, units: String, name: String = "") {
         self.quantity = ValuesNode(ConstantNode.decimal(quantity))
-        self.units = units
-        self.name = name
-    }
-
-    init(quantity: (Int, Int), units: String, name: String = "") {
-        self.quantity = ValuesNode(ConstantNode.fractional(quantity))
         self.units = units
         self.name = name
     }

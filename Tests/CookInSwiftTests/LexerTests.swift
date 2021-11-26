@@ -291,8 +291,7 @@ class LexerTests: XCTestCase {
     func testComments() {
         let input = "-- testing comments"
         let lexer = Lexer(input)
-                
-        XCTAssertEqual(lexer.getNextToken(), .eol)
+
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
 
@@ -342,7 +341,7 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("visible")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .eof)
-    }
+    }    
     
     func testDashLast() {
         let input = "onions -"

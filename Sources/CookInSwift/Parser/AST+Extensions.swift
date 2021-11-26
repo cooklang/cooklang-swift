@@ -26,10 +26,6 @@ extension ConstantNode {
         self = .decimal(value)
     }
 
-    init(_ value: (Int, Int)) {
-        self = .fractional(value)
-    }
-
     init(_ value: String) {
         self = .string(value)
     }
@@ -43,8 +39,6 @@ extension ConstantNode: CustomStringConvertible {
             return "\(value)"
         case let .decimal(value):
             return value.cleanValue
-        case let .fractional(value):
-            return "\(value.0)/\(value.1)"
         case let .string(value):
             return "\(value)"
         }
@@ -58,20 +52,10 @@ extension ConstantNode: Equatable {
             return left == right
         case let (.decimal(left), .decimal(right)):
             return left == right
-        case let (.fractional(left), .fractional(right)):
-            return left.0 == right.0 && left.1 == right.1
         case let (.decimal(left), .integer(right)):
             return left == Decimal(right)
         case let (.integer(left), .decimal(right)):
             return Decimal(left) == right
-        case let (.fractional(left), .integer(right)):
-            return Decimal(left.0/left.1) == Decimal(right)
-        case let (.fractional(left), .decimal(right)):
-            return Decimal(left.0/left.1) == right
-        case let (.integer(left), .fractional(right)):
-            return Decimal(left) == Decimal(right.0/right.1)
-        case let (.decimal(left), .fractional(right)):
-            return left == Decimal(right.0/right.1)
         case (.string(_), _):
             return false
         case (_, .string(_)):
@@ -147,8 +131,6 @@ extension AST {
                 return "\(value)"
             case let .decimal(value):
                 return "\(value.cleanValue)"
-            case let .fractional(value):
-                return "\(value)"
             }
 
         case is RecipeNode:
@@ -174,8 +156,6 @@ extension AST {
                 return "\(value) \(amount.units.pluralize(value))"
             case let .decimal(value):
                 return "\(value) \(amount.units.pluralize(2))"
-            case let .fractional(value):
-                return "\(value) \(amount.units.pluralize(1))"
             default:
                 return "\(amount.quantity) \(amount.units)"
             }

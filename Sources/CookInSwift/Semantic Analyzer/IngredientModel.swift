@@ -43,8 +43,6 @@ public class IngredientAmountCollection {
             amountsCountable[units] = amountsCountable[units, default: 0] + Decimal(value)
         case let .decimal(value):
             amountsCountable[units] = amountsCountable[units, default: 0] + value
-        case let .fractional(value):
-            amountsCountable[units] = amountsCountable[units, default: 0] + Decimal(value.0)/Decimal(value.1)
         case let .string(value):
             amountsUncountable[amount.units] = value
         case .none:
