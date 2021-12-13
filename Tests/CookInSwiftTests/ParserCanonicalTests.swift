@@ -4,7 +4,7 @@
 //
 // don't edit this file
 //
-// version: 1
+// version: 2
 //
 
 import Foundation
@@ -353,7 +353,7 @@ class ParserCanonicalTests: XCTestCase {
             let steps: [StepNode] = [
                 StepNode(instructions: [
                     DirectionNode("Top with "),
-                    IngredientNode(name: "1000 island dressing", amount: AmountNode(quantity: 1, units: "")),
+                    IngredientNode(name: "1000 island dressing", amount: AmountNode(quantity: "some", units: "")),
                 ]),
             ]
 
@@ -375,7 +375,7 @@ class ParserCanonicalTests: XCTestCase {
             let steps: [StepNode] = [
                 StepNode(instructions: [
                     DirectionNode("Add some "),
-                    IngredientNode(name: "🧂", amount: AmountNode(quantity: 1, units: "")),
+                    IngredientNode(name: "🧂", amount: AmountNode(quantity: "some", units: "")),
                 ]),
             ]
 
@@ -438,7 +438,7 @@ class ParserCanonicalTests: XCTestCase {
 
             let steps: [StepNode] = [
                 StepNode(instructions: [
-                    IngredientNode(name: "chilli", amount: AmountNode(quantity: 1, units: "items")),
+                    IngredientNode(name: "chilli", amount: AmountNode(quantity: "", units: "items")),
                 ]),
             ]
 
@@ -480,7 +480,7 @@ class ParserCanonicalTests: XCTestCase {
 
             let steps: [StepNode] = [
                 StepNode(instructions: [
-                    IngredientNode(name: "chilli", amount: AmountNode(quantity: 1, units: "")),
+                    IngredientNode(name: "chilli", amount: AmountNode(quantity: "some", units: "")),
                 ]),
             ]
 
@@ -501,7 +501,7 @@ class ParserCanonicalTests: XCTestCase {
 
             let steps: [StepNode] = [
                 StepNode(instructions: [
-                    IngredientNode(name: "5peppers", amount: AmountNode(quantity: 1, units: "")),
+                    IngredientNode(name: "5peppers", amount: AmountNode(quantity: "some", units: "")),
                 ]),
             ]
 
@@ -543,7 +543,7 @@ class ParserCanonicalTests: XCTestCase {
 
             let steps: [StepNode] = [
                 StepNode(instructions: [
-                    IngredientNode(name: "chilli", amount: AmountNode(quantity: 1, units: "")),
+                    IngredientNode(name: "chilli", amount: AmountNode(quantity: "some", units: "")),
                     DirectionNode(" cut into pieces"),
                 ]),
             ]
@@ -711,7 +711,7 @@ class ParserCanonicalTests: XCTestCase {
 
             let steps: [StepNode] = [
                 StepNode(instructions: [
-                    IngredientNode(name: "hot chilli", amount: AmountNode(quantity: 1, units: "")),
+                    IngredientNode(name: "hot chilli", amount: AmountNode(quantity: "some", units: "")),
                 ]),
             ]
 
@@ -732,9 +732,9 @@ class ParserCanonicalTests: XCTestCase {
 
             let steps: [StepNode] = [
                 StepNode(instructions: [
-                    IngredientNode(name: "chilli", amount: AmountNode(quantity: 1, units: "")),
+                    IngredientNode(name: "chilli", amount: AmountNode(quantity: "some", units: "")),
                     DirectionNode(" cut into pieces and "),
-                    IngredientNode(name: "garlic", amount: AmountNode(quantity: 1, units: "")),
+                    IngredientNode(name: "garlic", amount: AmountNode(quantity: "some", units: "")),
                 ]),
             ]
 
@@ -893,6 +893,28 @@ class ParserCanonicalTests: XCTestCase {
             XCTAssertEqual(result, node)
         }
     
+        func testEmptyTimer() {
+            let recipe =
+                """
+                Fry for ~{%mins}
+                """
+
+            let result = try! Parser.parse(recipe) as! RecipeNode
+
+            let steps: [StepNode] = [
+                StepNode(instructions: [
+                    DirectionNode("Fry for "),
+                    TimerNode(quantity: 0, units: "mins", name: ""),
+                ]),
+            ]
+
+            let metadata: [MetadataNode] = []
+
+            let node = RecipeNode(steps: steps, metadata: metadata)
+
+            XCTAssertEqual(result, node)
+        }
+
         func testTimerWithName() {
             let recipe =
                 """

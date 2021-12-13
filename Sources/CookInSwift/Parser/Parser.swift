@@ -222,10 +222,6 @@ public class Parser {
             }
         }
 
-        if v.isEmpty() {
-            v.add(ConstantNode.integer(1))
-        }
-
         ignoreWhitespace()
 
         return v
@@ -237,7 +233,7 @@ public class Parser {
     private func amount() throws -> AmountNode {
         eat(.braces(.left))
 
-        let q = values()
+        var q = values()
 
         var units = ""
 
@@ -248,6 +244,14 @@ public class Parser {
         }
 
         eat(.braces(.right))
+
+        if q.isEmpty() {
+            if units.isEmpty {
+                q.add(ConstantNode.string("some"))
+            } else {
+                q.add(ConstantNode.string(""))
+            }
+        }
 
         return AmountNode(quantity: q, units: units)
     }
@@ -310,7 +314,7 @@ public class Parser {
         eat(.at)
 
         let name = taggedName()
-        var ingridientAmount = AmountNode(quantity: 1, units: "")
+        var ingridientAmount = AmountNode(quantity: "some", units: "")
 
         if currentToken == .braces(.left) {
             do {
@@ -354,7 +358,7 @@ public class Parser {
         eat(.tilde)
         let name = taggedName()
         eat(.braces(.left))
-        let quantity = values()
+        var quantity = values()
         eat(.percent)
 
         var units = ""
@@ -369,6 +373,10 @@ public class Parser {
         }
 
         eat(.braces(.right))
+
+        if quantity.isEmpty() {
+            quantity.add(ConstantNode.integer(0))
+        }
 
         return TimerNode(quantity: quantity, units: units, name: name)
     }
