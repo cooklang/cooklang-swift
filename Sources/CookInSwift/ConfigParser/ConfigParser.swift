@@ -18,9 +18,10 @@ public class CookConfig {
 
         if sections[section] == nil {
             sections[section] = []
-        } else {
-            sections[section]?.append(item)
         }
+
+        sections[section]?.append(item)
+
     }
 }
 
