@@ -53,12 +53,12 @@ class SemanticAnalyzerTests: XCTestCase {
     func testShoppingListCombination() {
         let recipe1 =
             """
-            Add @chilli{3}, @ginger{10%g} and @milk{1%litre} place in #oven and cook for ~{10%minutes}
+            Add @chilli{3}, @ginger{10%g} and @milk{1%litre} place in #oven and cook for ~{10%minutes}. Add a bit of @cinnamon.
             """
 
         let recipe2 =
             """
-            Simmer @milk{250%ml} with @honey{2%tbsp} for ~{20%minutes}
+            Simmer @milk{250%ml} with @honey{2%tbsp} for ~{20%minutes}. Add a bit of @cinnamon.
             """
 
         let analyzer = SemanticAnalyzer()
@@ -69,7 +69,7 @@ class SemanticAnalyzerTests: XCTestCase {
 
         table = table + parsedRecipe1.ingredientsTable + parsedRecipe2.ingredientsTable
 
-        XCTAssertEqual(table.description, "chilli: 6; ginger: 20 g; honey: 4 tbsp; milk: 2 litres, 500 ml")
+        XCTAssertEqual(table.description, "chilli: 6; cinnamon: some; ginger: 20 g; honey: 4 tbsp; milk: 2 litres, 500 ml")
     }
     
 //    test valid ingridient: when only units, but no name of in
@@ -86,9 +86,9 @@ class SemanticAnalyzerTests: XCTestCase {
 
             Add the @tinned tomatoes{2%tins} and drained cannellini beans to the pan, reduce to a low heat and simmer gently for around 20 minutes, or until reduced and nice and thick. Meanwhile...
 
-            Peel, halve and finely chop the @red onion{}. Roughly chop the @cherry tomatoes{10}. Finely chop the @coriander{1%bunch} stalks and roughly chop the leaves.
+            Peel, halve and finely chop the @red onion{1}. Roughly chop the @cherry tomatoes{10}. Finely chop the @coriander{1%bunch} stalks and roughly chop the leaves.
 
-            Coarsely grate the @cheddar cheese{75%g}. Cut @lime{} in half and the other @lime{} into six wedges.
+            Coarsely grate the @cheddar cheese{75%g}. Cut @lime{1} in half and the other @lime{1} into six wedges.
 
             Cut the @avocados{2} in half lengthways, use a spppon to sccoop out and dicard the stone, then scoop the fles into a bowl to make your guacamole.
 
@@ -122,7 +122,7 @@ class SemanticAnalyzerTests: XCTestCase {
             let node = try! Parser.parse(recipe) as! RecipeNode
             let parsedRecipe = analyzer.analyze(node: node)
 
-            XCTAssertEqual(parsedRecipe.ingredientsTable.description, "avocados: 2; black pepper: 2; butter: 30 g; cannellini beans: 2 tins; cheddar cheese: 75 g; cherry tomatoes: 10; coriander: 1 bunch; eggs: 8 large; fresh red chilli: 2; garlic clove: 2; ground cumin: 1 pinch; lime: 2; olive oil: 1 tbsp; red chilli: 1 item; red onion: 1; salt: 1; sea salt: 1; smoked paprika: 1 pinch; sour cream: 200 ml; tinned tomatoes: 2 tins; tortillas: 6 large")
+            XCTAssertEqual(parsedRecipe.ingredientsTable.description, "avocados: 2; black pepper: some; butter: 30 g; cannellini beans: 2 tins; cheddar cheese: 75 g; cherry tomatoes: 10; coriander: 1 bunch; eggs: 8 large; fresh red chilli: 2; garlic clove: 2; ground cumin: 1 pinch; lime: 2; olive oil: 1 tbsp; red chilli: 1 item; red onion: 1; salt: some; sea salt: some; smoked paprika: 1 pinch; sour cream: 200 ml; tinned tomatoes: 2 tins; tortillas: 6 large")
         }
 
     }
@@ -161,7 +161,7 @@ class SemanticAnalyzerTests: XCTestCase {
         let node = try! Parser.parse(recipe) as! RecipeNode
         let parsedRecipe = analyzer.analyze(node: node)
 
-        XCTAssertEqual(parsedRecipe.ingredientsTable.description, "bay leaves: 2; black pepper: 1 tsp; carrots: 1 large; garlic: 1 glove; ground coriander: 1 tsp; ground cumin: 1 tsp; lamb: 450 g; linguine pasta: 230 g; oil: 1; onion: 1 medium; potatoes: 420 g; red peppers: 0.5 large; star anise: 1 small; tomatoes: 2 large; water: 1.4 kg")
+        XCTAssertEqual(parsedRecipe.ingredientsTable.description, "bay leaves: 2; black pepper: 1 tsp; carrots: 1 large; garlic: 1 glove; ground coriander: 1 tsp; ground cumin: 1 tsp; lamb: 450 g; linguine pasta: 230 g; oil: some; onion: 1 medium; potatoes: 420 g; red peppers: 0.5 large; star anise: 1 small; tomatoes: 2 large; water: 1.4 kg")
 
     }
 
@@ -268,7 +268,7 @@ class SemanticAnalyzerTests: XCTestCase {
                               "@",
                               "~",
                               "#",
-                              "Take a square, place one corner over the other 1  pinch together. Take the other corner and repeat. Pinch together the four openings. Now take the two edges and pinch them together as well, placing over edge over the other.",
+                              "Take a square, place one corner over the other 0  pinch together. Take the other corner and repeat. Pinch together the four openings. Now take the two edges and pinch them together as well, placing over edge over the other.",
                               "Add water to a tiered steamer. Lay out Manti on tiers. Cover steamer and cook 20-25 minutes. All steamers are different, check a Manti to see if it\'s ready. If using different meat, it\'ll need about 40 - 60 minutes.",
                               "Enjoy with butter and sour cream."]
 
