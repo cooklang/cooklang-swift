@@ -27,8 +27,8 @@ class ConfigParserTests: XCTestCase {
         let parser = ConfigParser(textConfig)
         let result = parser.parse()
 
-        let sections = ["fruit and veg": ["bananas", "beetroots"],
-                        "milk and dairy": ["egg"]]
+        let sections = ["fruit and veg": ["apples", "bananas", "beetroots"],
+                        "milk and dairy": ["butter", "egg"]]
 
         let items = ["egg": "milk and dairy",
                      "butter": "milk and dairy",
@@ -56,8 +56,8 @@ class ConfigParserTests: XCTestCase {
         let parser = ConfigParser(textConfig)
         let result = parser.parse()
 
-        let sections = ["fruit and veg": ["apple", "bananas", "banana", "beetroots", "beetroot"],
-                        "milk and dairy": ["egg", "eggs"]]
+        let sections = ["fruit and veg": ["apples", "apple", "bananas", "banana", "beetroots", "beetroot"],
+                        "milk and dairy": ["butter", "egg", "eggs"]]
 
         let items = ["apple": "fruit and veg",
                      "banana": "fruit and veg",
