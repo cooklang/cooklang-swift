@@ -491,17 +491,35 @@ class LexerTests: XCTestCase {
         XCTAssertEqual(lexer.getNextToken(), .eof)
     }
     
-    func tesTimer() {
+    func testTimer() {
         let input = "cook for ~{10%minutes}"
         let lexer = Lexer(input)
     
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("cook")))
         XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("for")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .tilde)
         XCTAssertEqual(lexer.getNextToken(), .braces(.left))
         XCTAssertEqual(lexer.getNextToken(), .constant(.integer(10)))
         XCTAssertEqual(lexer.getNextToken(), .percent)
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("minutes")))
+        XCTAssertEqual(lexer.getNextToken(), .braces(.right))
+        XCTAssertEqual(lexer.getNextToken(), .eof)
+    }
+
+    func testBrokenTimer() {
+        let input = "cook for ~{10 minutes}"
+        let lexer = Lexer(input)
+
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("cook")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.string("for")))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
+        XCTAssertEqual(lexer.getNextToken(), .tilde)
+        XCTAssertEqual(lexer.getNextToken(), .braces(.left))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.integer(10)))
+        XCTAssertEqual(lexer.getNextToken(), .constant(.space))
         XCTAssertEqual(lexer.getNextToken(), .constant(.string("minutes")))
         XCTAssertEqual(lexer.getNextToken(), .braces(.right))
         XCTAssertEqual(lexer.getNextToken(), .eof)

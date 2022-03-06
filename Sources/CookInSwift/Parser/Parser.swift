@@ -359,17 +359,18 @@ public class Parser {
         let name = taggedName()
         eat(.braces(.left))
         var quantity = values()
-        eat(.percent)
-
         var units = ""
+        if currentToken == .percent {
+            eat(.percent)
 
-        do {
-            units = try stringUntilTerminator(terminators: [.braces(.right)])
-        } catch ParserError.terminatorNotFound {
-            print("Warning: expected '}' but got end of line")
-            return TimerNode(quantity: "", units: "", name: "Invalid timer syntax")
-        } catch {
-            fatalError("Unexpected exception")
+            do {
+                units = try stringUntilTerminator(terminators: [.braces(.right)])
+            } catch ParserError.terminatorNotFound {
+                print("Warning: expected '}' but got end of line")
+                return TimerNode(quantity: "", units: "", name: "Invalid timer syntax")
+            } catch {
+                fatalError("Unexpected exception")
+            }
         }
 
         eat(.braces(.right))
