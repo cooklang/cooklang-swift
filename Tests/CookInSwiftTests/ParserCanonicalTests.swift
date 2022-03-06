@@ -4,7 +4,7 @@
 //
 // don't edit this file
 //
-// version: 2
+// version: 4
 //
 
 import Foundation
@@ -418,27 +418,6 @@ class ParserCanonicalTests: XCTestCase {
             let steps: [StepNode] = [
                 StepNode(instructions: [
                     IngredientNode(name: "chilli", amount: AmountNode(quantity: 3, units: "items")),
-                ]),
-            ]
-
-            let metadata: [MetadataNode] = []
-
-            let node = RecipeNode(steps: steps, metadata: metadata)
-
-            XCTAssertEqual(result, node)
-        }
-    
-        func testIngridentImplicitQuantity() {
-            let recipe =
-                """
-                @chilli{%items}
-                """
-
-            let result = try! Parser.parse(recipe) as! RecipeNode
-
-            let steps: [StepNode] = [
-                StepNode(instructions: [
-                    IngredientNode(name: "chilli", amount: AmountNode(quantity: "", units: "items")),
                 ]),
             ]
 
@@ -893,28 +872,6 @@ class ParserCanonicalTests: XCTestCase {
             XCTAssertEqual(result, node)
         }
     
-        func testEmptyTimer() {
-            let recipe =
-                """
-                Fry for ~{%mins}
-                """
-
-            let result = try! Parser.parse(recipe) as! RecipeNode
-
-            let steps: [StepNode] = [
-                StepNode(instructions: [
-                    DirectionNode("Fry for "),
-                    TimerNode(quantity: 0, units: "mins", name: ""),
-                ]),
-            ]
-
-            let metadata: [MetadataNode] = []
-
-            let node = RecipeNode(steps: steps, metadata: metadata)
-
-            XCTAssertEqual(result, node)
-        }
-
         func testTimerWithName() {
             let recipe =
                 """
