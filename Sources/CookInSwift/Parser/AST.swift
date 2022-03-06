@@ -10,43 +10,10 @@ import Foundation
 
 public protocol AST {}
 
-public enum ConstantNode: AST {
+public enum ValueNode: AST {
     case integer(Int)
     case decimal(Decimal)
     case string(String)
-}
-
-public struct ValueNode: AST {
-    var value: ConstantNode
-
-    init() {
-//        TODO ???
-        value = ConstantNode("")
-    }
-
-    init(_ v: ConstantNode)  {
-        value = v
-    }
-
-    init(_ v: String) {
-        value = ConstantNode(v)
-    }
-
-    init(_ v: Int) {
-        value = ConstantNode(v)
-    }
-
-    init(_ v: Decimal) {
-        value = ConstantNode(v)
-    }
-
-    mutating func add(_ v: ConstantNode) {
-        value = v
-    }
-
-    func isEmpty() -> Bool {
-        return value.isEmpty
-    }
 }
 
 struct DirectionNode: AST {
@@ -58,8 +25,6 @@ struct DirectionNode: AST {
 }
 
 
-
-
 struct MetadataNode: AST {
     let key: String
     let value: ValueNode
@@ -69,23 +34,18 @@ struct MetadataNode: AST {
         self.value = value
     }
 
-    init(_ key: String, _ value: ConstantNode) {
-        self.key = key
-        self.value = ValueNode(value)
-    }
-
     init(_ key: String, _ value: String) {
-        self.value = ValueNode(ConstantNode.string(value))
+        self.value = ValueNode.string(value)
         self.key = key
     }
 
     init(_ key: String, _ value: Int) {
-        self.value = ValueNode(ConstantNode.integer(value))
+        self.value = ValueNode.integer(value)
         self.key = key
     }
 
     init(_ key: String, _ value: Decimal) {
-        self.value = ValueNode(ConstantNode.decimal(value))
+        self.value = ValueNode.decimal(value)
         self.key = key
     }
 
@@ -101,23 +61,18 @@ struct AmountNode: AST {
         self.units = units
     }
 
-    init(quantity: ConstantNode, units: String = "") {
-        self.quantity = ValueNode(quantity)
-        self.units = units
-    }
-
     init(quantity: String, units: String = "") {
-        self.quantity = ValueNode(ConstantNode.string(quantity))
+        self.quantity = ValueNode.string(quantity)
         self.units = units
     }
 
     init(quantity: Int, units: String = "") {
-        self.quantity = ValueNode(ConstantNode.integer(quantity))
+        self.quantity = ValueNode.integer(quantity)
         self.units = units
     }
 
     init(quantity: Decimal, units: String = "") {
-        self.quantity = ValueNode(ConstantNode.decimal(quantity))
+        self.quantity = ValueNode.decimal(quantity)
         self.units = units
     }
 
@@ -154,26 +109,20 @@ struct TimerNode: AST {
         self.name = name
     }
 
-    init(quantity: ConstantNode, units: String, name: String = "") {
-        self.quantity = ValueNode(quantity)
-        self.units = units
-        self.name = name
-    }
-
     init(quantity: String, units: String, name: String = "") {
-        self.quantity = ValueNode(ConstantNode.string(quantity))
+        self.quantity = ValueNode.string(quantity)
         self.units = units
         self.name = name
     }
 
     init(quantity: Int, units: String, name: String = "") {
-        self.quantity = ValueNode(ConstantNode.integer(quantity))
+        self.quantity = ValueNode.integer(quantity)
         self.units = units
         self.name = name
     }
 
     init(quantity: Decimal, units: String, name: String = "") {
-        self.quantity = ValueNode(ConstantNode.decimal(quantity))
+        self.quantity = ValueNode.decimal(quantity)
         self.units = units
         self.name = name
     }

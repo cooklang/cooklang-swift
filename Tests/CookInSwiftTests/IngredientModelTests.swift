@@ -16,13 +16,13 @@ class IngredientModelTests: XCTestCase {
     func testIngredientTableAddition() {
         var table1 = IngredientTable()
 
-        table1.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(3), "items"))
-        table1.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(1), "medium"))
+        table1.add(name: "chilli", amount: IngredientAmount(ValueNode.integer(3), "items"))
+        table1.add(name: "chilli", amount: IngredientAmount(ValueNode.integer(1), "medium"))
 
         var table2 = IngredientTable()
 
-        table2.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(5), "items"))
-        table1.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(3), "small"))
+        table2.add(name: "chilli", amount: IngredientAmount(ValueNode.integer(5), "items"))
+        table1.add(name: "chilli", amount: IngredientAmount(ValueNode.integer(3), "small"))
 
         XCTAssertEqual((table1 + table2).description, "chilli: 8 items, 1 medium, 3 small")
     }
@@ -30,8 +30,8 @@ class IngredientModelTests: XCTestCase {
     func testSameUnitsAndType() {
         var collection = IngredientAmountCollection()
         
-        collection.add(IngredientAmount(ConstantNode.integer(1), "g"))
-        collection.add(IngredientAmount(ConstantNode.integer(3), "g"))
+        collection.add(IngredientAmount(ValueNode.integer(1), "g"))
+        collection.add(IngredientAmount(ValueNode.integer(3), "g"))
             
         
         XCTAssertEqual(collection.description, "4 g")
@@ -40,9 +40,9 @@ class IngredientModelTests: XCTestCase {
     func testDifferentUnits() {
         var collection = IngredientAmountCollection()
         
-        collection.add(IngredientAmount(ConstantNode.integer(50), "g"))
-        collection.add(IngredientAmount(ConstantNode.integer(50), "g"))
-        collection.add(IngredientAmount(ConstantNode.integer(1), "kg"))
+        collection.add(IngredientAmount(ValueNode.integer(50), "g"))
+        collection.add(IngredientAmount(ValueNode.integer(50), "g"))
+        collection.add(IngredientAmount(ValueNode.integer(1), "kg"))
             
         
         XCTAssertEqual(collection.description, "100 g, 1 kg")
@@ -51,9 +51,9 @@ class IngredientModelTests: XCTestCase {
     func testDifferenQuantityTypes() {
         var collection = IngredientAmountCollection()
                 
-        collection.add(IngredientAmount(ConstantNode.integer(500), "g"))
-        collection.add(IngredientAmount(ConstantNode.decimal(1.5), "kg"))
-        collection.add(IngredientAmount(ConstantNode.decimal(1), "kg"))
+        collection.add(IngredientAmount(ValueNode.integer(500), "g"))
+        collection.add(IngredientAmount(ValueNode.decimal(1.5), "kg"))
+        collection.add(IngredientAmount(ValueNode.decimal(1), "kg"))
             
         
         XCTAssertEqual(collection.description, "500 g, 2.5 kg")
@@ -62,8 +62,8 @@ class IngredientModelTests: XCTestCase {
     func testFractionsQuantityTypes() {
         var collection = IngredientAmountCollection()
                 
-        collection.add(IngredientAmount(ConstantNode.decimal(0.5), "cup"))
-        collection.add(IngredientAmount(ConstantNode.integer(1), "cup"))
+        collection.add(IngredientAmount(ValueNode.decimal(0.5), "cup"))
+        collection.add(IngredientAmount(ValueNode.integer(1), "cup"))
             
         
         XCTAssertEqual(collection.description, "1.5 cups")
@@ -72,8 +72,8 @@ class IngredientModelTests: XCTestCase {
     func testFractionsQuantityDecimalTypes() {
         var collection = IngredientAmountCollection()
 
-        collection.add(IngredientAmount(ConstantNode.decimal(Decimal(1) / Decimal(3)), "cup"))
-        collection.add(IngredientAmount(ConstantNode.integer(1), "cup"))
+        collection.add(IngredientAmount(ValueNode.decimal(Decimal(1) / Decimal(3)), "cup"))
+        collection.add(IngredientAmount(ValueNode.integer(1), "cup"))
 
 
         XCTAssertEqual(collection.description, "1.3 cups")
@@ -82,8 +82,8 @@ class IngredientModelTests: XCTestCase {
     func testWithPluralUnits() {
         var collection = IngredientAmountCollection()
                 
-        collection.add(IngredientAmount(ConstantNode.integer(1), "cup"))
-        collection.add(IngredientAmount(ConstantNode.integer(2), "cups"))
+        collection.add(IngredientAmount(ValueNode.integer(1), "cup"))
+        collection.add(IngredientAmount(ValueNode.integer(2), "cups"))
             
         
         XCTAssertEqual(collection.description, "3 cups")
@@ -92,8 +92,8 @@ class IngredientModelTests: XCTestCase {
     func testWithPluralAndSingularIngredient() {
         var collection = IngredientAmountCollection()
 
-        collection.add(IngredientAmount(ConstantNode.integer(1), "onion"))
-        collection.add(IngredientAmount(ConstantNode.integer(2), "onions"))
+        collection.add(IngredientAmount(ValueNode.integer(1), "onion"))
+        collection.add(IngredientAmount(ValueNode.integer(2), "onions"))
 
         XCTAssertEqual(collection.description, "3 onions")
     }
@@ -101,7 +101,7 @@ class IngredientModelTests: XCTestCase {
     func testWithTextQuantity() {
         var collection = IngredientAmountCollection()
                 
-        collection.add(IngredientAmount(ConstantNode.string("few"), "springs"))
+        collection.add(IngredientAmount(ValueNode.string("few"), "springs"))
         
         XCTAssertEqual(collection.description, "few springs")
     }

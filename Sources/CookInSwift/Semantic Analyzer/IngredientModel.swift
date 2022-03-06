@@ -16,12 +16,7 @@ public struct IngredientAmount {
     init(_ quantity: ValueNode, _ units: String) {
         self.quantity = quantity
         self.units = units
-    }
-
-    init(_ quantity: ConstantNode, _ units: String) {
-        self.quantity = ValueNode(quantity)
-        self.units = units
-    }
+    }  
 
     init(_ quantity: Int, _ units: String) {
         self.quantity = ValueNode(quantity)
@@ -38,7 +33,7 @@ public struct IngredientAmountCollection {
         let units = amount.units.singularize
 
         // TODO
-        switch amount.quantity.value {
+        switch amount.quantity {
         case let .integer(value):
             amountsCountable[units] = amountsCountable[units, default: 0] + Decimal(value)
         case let .decimal(value):
