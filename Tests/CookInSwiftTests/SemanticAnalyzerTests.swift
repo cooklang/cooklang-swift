@@ -23,21 +23,21 @@ class SemanticAnalyzerTests: XCTestCase {
         let analyzer = SemanticAnalyzer()
         let parsedRecipe = analyzer.analyze(node: node)
 
-        let recipe = SemanticRecipe()
+        var recipe = Recipe()
         recipe.metadata["cooking time"] = "30 min"
 
-        let step = SemanticStep()
+        var step = Step()
         step.directions = [
             TextItem("Add "),
-            ParsedIngredient("chilli", IngredientAmount(3, "items")),
+            Ingredient("chilli", IngredientAmount(3, "items")),
             TextItem(", "),
-            ParsedIngredient("ginger", IngredientAmount(10, "g")),
+            Ingredient("ginger", IngredientAmount(10, "g")),
             TextItem(" and "),
-            ParsedIngredient("milk", IngredientAmount(1, "litre")),
+            Ingredient("milk", IngredientAmount(1, "litre")),
             TextItem(" place in "),
-            ParsedEquipment("oven"),
+            Equipment("oven"),
             TextItem(" and cook for "),
-            ParsedTimer(10, "minutes")
+            Timer(10, "minutes")
         ]
         recipe.steps = [step]
 

@@ -10,15 +10,15 @@ import Foundation
 
 
 
-extension SemanticRecipe: Equatable {
-    public static func == (lhs: SemanticRecipe, rhs: SemanticRecipe) -> Bool {
+extension Recipe: Equatable {
+    public static func == (lhs: Recipe, rhs: Recipe) -> Bool {
         return lhs.steps == rhs.steps && lhs.metadata == rhs.metadata
     }
 }
 
 
 
-extension SemanticStep: CustomStringConvertible {
+extension Step: CustomStringConvertible {
     public var description: String {
         return """
         Directions:
@@ -29,8 +29,8 @@ extension SemanticStep: CustomStringConvertible {
     }
 }
 
-extension SemanticStep: Equatable {
-    public static func ==(lhs: SemanticStep, rhs: SemanticStep) -> Bool {
+extension Step: Equatable {
+    public static func ==(lhs: Step, rhs: Step) -> Bool {
         // TODO too expensive
         return lhs.directions.map { $0.description }.joined() == rhs.directions.map { $0.description }.joined()
     }
@@ -52,13 +52,13 @@ extension TextItem: Equatable {
 
 
 
-extension ParsedEquipment: Equatable {
-    public static func == (lhs: ParsedEquipment, rhs: ParsedEquipment) -> Bool {
+extension Equipment: Equatable {
+    public static func == (lhs: Equipment, rhs: Equipment) -> Bool {
         return lhs.name == rhs.name
     }
 }
 
-extension ParsedEquipment: CustomStringConvertible {
+extension Equipment: CustomStringConvertible {
     public var description: String {
         return name
     }
@@ -67,13 +67,13 @@ extension ParsedEquipment: CustomStringConvertible {
 
 
 
-extension ParsedTimer: Equatable {
-    public static func == (lhs: ParsedTimer, rhs: ParsedTimer) -> Bool {
+extension Timer: Equatable {
+    public static func == (lhs: Timer, rhs: Timer) -> Bool {
         return lhs.quantity == rhs.quantity
     }
 }
 
-extension ParsedTimer: CustomStringConvertible {
+extension Timer: CustomStringConvertible {
     public var description: String {
         if let v = Int(quantity.value) {
             return "\(quantity.value) \(units.pluralize(v))"
@@ -85,14 +85,14 @@ extension ParsedTimer: CustomStringConvertible {
 
 
 
-extension ParsedIngredient: Equatable {
-    public static func == (lhs: ParsedIngredient, rhs: ParsedIngredient) -> Bool {
+extension Ingredient: Equatable {
+    public static func == (lhs: Ingredient, rhs: Ingredient) -> Bool {
         return lhs.name == rhs.name
     }
 }
 
 
-extension ParsedIngredient: CustomStringConvertible {
+extension Ingredient: CustomStringConvertible {
     public var description: String {
         return name
     }

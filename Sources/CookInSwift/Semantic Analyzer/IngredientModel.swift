@@ -8,7 +8,7 @@
 import Foundation
 
 
-public class IngredientAmount {
+public struct IngredientAmount {
 //    TODO remove refs to internal ValuesNode
     public var quantity: ValueNode
     public var units: String
@@ -30,11 +30,11 @@ public class IngredientAmount {
 }
 
 
-public class IngredientAmountCollection {
+public struct IngredientAmountCollection {
     var amountsCountable: [String: Decimal] = [:]
     var amountsUncountable: [String: String] = [:]
 
-    func add(_ amount: IngredientAmount) {
+    mutating func add(_ amount: IngredientAmount) {
         let units = amount.units.singularize
 
         // TODO
@@ -44,18 +44,18 @@ public class IngredientAmountCollection {
         case let .decimal(value):
             amountsCountable[units] = amountsCountable[units, default: 0] + value
         case let .string(value):
-            amountsUncountable[amount.units] = value        
+            amountsUncountable[amount.units] = value
         }
     }
 }
 
-public class IngredientTable {
+public struct IngredientTable {
     public var ingredients: [String: IngredientAmountCollection] = [:]
 
     public init() {
     }
 
-    public func add(name: String, amount: IngredientAmount) {
+    mutating public func add(name: String, amount: IngredientAmount) {
         if ingredients[name] == nil {
             ingredients[name] = IngredientAmountCollection()
         }
@@ -63,7 +63,7 @@ public class IngredientTable {
         ingredients[name]?.add(amount)
     }
 
-    public func add(name: String, amounts: IngredientAmountCollection) {
+    mutating public func add(name: String, amounts: IngredientAmountCollection) {
         amounts.forEach {
             add(name: name, amount: $0)
         }

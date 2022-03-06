@@ -8,23 +8,22 @@
 
 import Foundation
 
-public class SemanticRecipe: Identifiable {
-    public let id = UUID()
+public struct Recipe {
     public var ingredientsTable: IngredientTable = IngredientTable()
-    public var steps: [SemanticStep] = []
-    public var equipment: [ParsedEquipment] = []
+    public var steps: [Step] = []
+    public var equipment: [Equipment] = []
     public var metadata: [String: String] = [:]
 
-    func addStep(_ step: SemanticStep) {
+    mutating func addStep(_ step: Step) {
         steps.append(step)
         ingredientsTable = ingredientsTable + step.ingredientsTable
     }
 
-    func addEquipment(_ e: EquipmentNode) {
-        equipment.append(ParsedEquipment(e.name))
+    mutating func addEquipment(_ e: EquipmentNode) {
+        equipment.append(Equipment(e.name))
     }
 
-    func addMetadata(_ m: [MetadataNode]) {
+    mutating func addMetadata(_ m: [MetadataNode]) {
         m.forEach{ item in
             metadata[item.key] = item.value.description
         }
@@ -32,44 +31,43 @@ public class SemanticRecipe: Identifiable {
 
 }
 
-public class SemanticStep: Identifiable {
-    public let id = UUID()
+public struct Step {
     public var ingredientsTable: IngredientTable = IngredientTable()
     public var directions: [DirectionItem] = []
-    public var timers: [ParsedTimer] = []
-    public var equipments: [ParsedEquipment] = []
+    public var timers: [Timer] = []
+    public var equipments: [Equipment] = []
 
-    func addIngredient(_ ingredient: IngredientNode) {
+    mutating func addIngredient(_ ingredient: IngredientNode) {
         let name = ingredient.name
         let amount = IngredientAmount(ingredient.amount.quantity, ingredient.amount.units)
-        let ingredient = ParsedIngredient(name, amount)
+        let ingredient = Ingredient(name, amount)
 
         ingredientsTable.add(name: name, amount: amount)
         directions.append(ingredient)
     }
 
-    func addTimer(_ timer: TimerNode) {
-        let timer = ParsedTimer(timer.quantity, timer.units)
+    mutating func addTimer(_ timer: TimerNode) {
+        let timer = Timer(timer.quantity, timer.units)
 
         timers.append(timer)
         directions.append(timer)
     }
 
-    func addText(_ direction: DirectionNode) {
+    mutating func addText(_ direction: DirectionNode) {
         let text = TextItem(direction.value.description)
 
         directions.append(text)
     }
 
-    func addEquipment(_ equipment: EquipmentNode) {
-        let equipment = ParsedEquipment(equipment.name)
+    mutating func addEquipment(_ equipment: EquipmentNode) {
+        let equipment = Equipment(equipment.name)
 
         equipments.append(equipment)
         directions.append(equipment)
     }
 }
 
-public class TextItem: DirectionItem {
+public struct TextItem: DirectionItem {
     public var value: String
 
     init(_ value: String) {
@@ -78,7 +76,7 @@ public class TextItem: DirectionItem {
 }
 
 
-public class ParsedIngredient: DirectionItem {
+public struct Ingredient: DirectionItem {
     public var name: String
     public var amount: IngredientAmount
 
@@ -88,7 +86,7 @@ public class ParsedIngredient: DirectionItem {
     }
 }
 
-public class ParsedEquipment: DirectionItem {
+public struct Equipment: DirectionItem {
     public var name: String
 
     init(_ name: String) {
@@ -96,7 +94,7 @@ public class ParsedEquipment: DirectionItem {
     }
 }
 
-public class ParsedTimer: DirectionItem {
+public struct Timer: DirectionItem {
 //    TODO remove refs to internal ValuesNode
     public var quantity: ValueNode
     public var units: String

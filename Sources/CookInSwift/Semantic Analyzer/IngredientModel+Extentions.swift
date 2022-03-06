@@ -22,7 +22,7 @@ extension IngredientTable: CustomStringConvertible {
 
 public extension IngredientTable {
     static func + (left: IngredientTable, right: IngredientTable) -> IngredientTable {
-        let result = IngredientTable()
+        var result = IngredientTable()
 
         for (name, amounts) in left.ingredients {
             result.add(name: name, amounts: amounts)

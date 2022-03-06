@@ -14,12 +14,12 @@ import XCTest
 class IngredientModelTests: XCTestCase {
 
     func testIngredientTableAddition() {
-        let table1 = IngredientTable()
+        var table1 = IngredientTable()
 
         table1.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(3), "items"))
         table1.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(1), "medium"))
 
-        let table2 = IngredientTable()
+        var table2 = IngredientTable()
 
         table2.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(5), "items"))
         table1.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(3), "small"))
@@ -28,7 +28,7 @@ class IngredientModelTests: XCTestCase {
     }
 
     func testSameUnitsAndType() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
         
         collection.add(IngredientAmount(ConstantNode.integer(1), "g"))
         collection.add(IngredientAmount(ConstantNode.integer(3), "g"))
@@ -38,7 +38,7 @@ class IngredientModelTests: XCTestCase {
     }
     
     func testDifferentUnits() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
         
         collection.add(IngredientAmount(ConstantNode.integer(50), "g"))
         collection.add(IngredientAmount(ConstantNode.integer(50), "g"))
@@ -49,7 +49,7 @@ class IngredientModelTests: XCTestCase {
     }
     
     func testDifferenQuantityTypes() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
                 
         collection.add(IngredientAmount(ConstantNode.integer(500), "g"))
         collection.add(IngredientAmount(ConstantNode.decimal(1.5), "kg"))
@@ -60,7 +60,7 @@ class IngredientModelTests: XCTestCase {
     }
     
     func testFractionsQuantityTypes() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
                 
         collection.add(IngredientAmount(ConstantNode.decimal(0.5), "cup"))
         collection.add(IngredientAmount(ConstantNode.integer(1), "cup"))
@@ -70,7 +70,7 @@ class IngredientModelTests: XCTestCase {
     }
 
     func testFractionsQuantityDecimalTypes() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
 
         collection.add(IngredientAmount(ConstantNode.decimal(Decimal(1) / Decimal(3)), "cup"))
         collection.add(IngredientAmount(ConstantNode.integer(1), "cup"))
@@ -80,7 +80,7 @@ class IngredientModelTests: XCTestCase {
     }
     
     func testWithPluralUnits() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
                 
         collection.add(IngredientAmount(ConstantNode.integer(1), "cup"))
         collection.add(IngredientAmount(ConstantNode.integer(2), "cups"))
@@ -90,7 +90,7 @@ class IngredientModelTests: XCTestCase {
     }
     
     func testWithPluralAndSingularIngredient() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
 
         collection.add(IngredientAmount(ConstantNode.integer(1), "onion"))
         collection.add(IngredientAmount(ConstantNode.integer(2), "onions"))
@@ -99,7 +99,7 @@ class IngredientModelTests: XCTestCase {
     }
     
     func testWithTextQuantity() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
                 
         collection.add(IngredientAmount(ConstantNode.string("few"), "springs"))
         
