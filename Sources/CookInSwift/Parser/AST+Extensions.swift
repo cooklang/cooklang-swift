@@ -76,27 +76,16 @@ extension StepNode: Equatable {
     }
 }
 
-extension ValuesNode: Equatable {
-    public static func == (lhs: ValuesNode, rhs: ValuesNode) -> Bool {
-        for (l, r) in zip(lhs.values, rhs.values) {
-            if l.value != r.value {
-                return false
-            }
-        }
-
-        return true
+extension ValueNode: Equatable {
+    public static func == (lhs: ValueNode, rhs: ValueNode) -> Bool {
+        return lhs.value.value == rhs.value.value
     }
 }
 
-extension ValuesNode: Sequence {
-    public func makeIterator() -> IndexingIterator<[ConstantNode]> {
-        return values.makeIterator()
-    }
-}
 
-extension ValuesNode: CustomStringConvertible {
+extension ValueNode: CustomStringConvertible {
     public var description: String {
-        return map{ $0.value }.joined(separator: "|")
+        return value.description
     }
 }
 
@@ -122,15 +111,15 @@ extension TimerNode: Equatable {
 extension AST {
     var value: String {
         switch self {
-        case let value as ConstantNode:
+        case let v as ConstantNode:
 
-            switch value {
-            case let .string(value):
-                return "\(value)"
-            case let .integer(value):
-                return "\(value)"
-            case let .decimal(value):
-                return "\(value.cleanValue)"
+            switch v {
+            case let .string(v):
+                return "\(v)"
+            case let .integer(v):
+                return "\(v)"
+            case let .decimal(v):
+                return "\(v.cleanValue)"
             }
 
         case is RecipeNode:
@@ -147,11 +136,11 @@ extension AST {
             return "EQ: \(equipment.name)"
         case let timer as TimerNode:
             return "TIMER(\(timer.name)): \(timer.quantity) \(timer.units)"
-        case let v as ValuesNode:
+        case let v as ValueNode:
             return "\(v)"
         case let amount as AmountNode:
 //            TODO
-            switch amount.quantity.values.first {
+            switch amount.quantity.value {
             case let .integer(value):
                 return "\(value) \(amount.units.pluralize(value))"
             case let .decimal(value):
@@ -181,7 +170,7 @@ extension AST {
             return []
         case is TimerNode:
             return []
-        case is ValuesNode:
+        case is ValueNode:
             return []
         case is EquipmentNode:
             return []

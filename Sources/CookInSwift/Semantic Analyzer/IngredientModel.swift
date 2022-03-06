@@ -10,21 +10,21 @@ import Foundation
 
 public class IngredientAmount {
 //    TODO remove refs to internal ValuesNode
-    public var quantity: ValuesNode
+    public var quantity: ValueNode
     public var units: String
 
-    init(_ quantity: ValuesNode, _ units: String) {
+    init(_ quantity: ValueNode, _ units: String) {
         self.quantity = quantity
         self.units = units
     }
 
     init(_ quantity: ConstantNode, _ units: String) {
-        self.quantity = ValuesNode(quantity)
+        self.quantity = ValueNode(quantity)
         self.units = units
     }
 
     init(_ quantity: Int, _ units: String) {
-        self.quantity = ValuesNode(quantity)
+        self.quantity = ValueNode(quantity)
         self.units = units
     }
 }
@@ -38,15 +38,13 @@ public class IngredientAmountCollection {
         let units = amount.units.singularize
 
         // TODO
-        switch amount.quantity.values.first {
+        switch amount.quantity.value {
         case let .integer(value):
             amountsCountable[units] = amountsCountable[units, default: 0] + Decimal(value)
         case let .decimal(value):
             amountsCountable[units] = amountsCountable[units, default: 0] + value
         case let .string(value):
-            amountsUncountable[amount.units] = value
-        case .none:
-            fatalError("Shite!")
+            amountsUncountable[amount.units] = value        
         }
     }
 }

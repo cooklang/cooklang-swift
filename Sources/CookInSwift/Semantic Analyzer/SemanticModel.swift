@@ -98,27 +98,27 @@ public class ParsedEquipment: DirectionItem {
 
 public class ParsedTimer: DirectionItem {
 //    TODO remove refs to internal ValuesNode
-    public var quantity: ValuesNode
+    public var quantity: ValueNode
     public var units: String
 
-    init(_ quantity: ValuesNode, _ units: String) {
+    init(_ quantity: ValueNode, _ units: String) {
         self.quantity = quantity
         self.units = units
     }
 
 //    TODO figure out how to make it DRY
     init(_ quantity: Int, _ units: String) {
-        self.quantity = ValuesNode(quantity)
+        self.quantity = ValueNode(quantity)
         self.units = units
     }
 
     init(_ quantity: String, _ units: String) {
-        self.quantity = ValuesNode(quantity)
+        self.quantity = ValueNode(quantity)
         self.units = units
     }
 
     init(_ quantity: Decimal, _ units: String) {
-        self.quantity = ValuesNode(quantity)
+        self.quantity = ValueNode(quantity)
         self.units = units
     }
 }
