@@ -61,15 +61,14 @@ class SemanticAnalyzerTests: XCTestCase {
             Simmer @milk{250%ml} with @honey{2%tbsp} for ~{20%minutes}. Add a bit of @cinnamon.
             """
 
-        let analyzer = SemanticAnalyzer()
-        let parsedRecipe1 = analyzer.analyze(node: try! Parser.parse(recipe1))
-        let parsedRecipe2 = analyzer.analyze(node: try! Parser.parse(recipe2))
+        let parsedRecipe1 = SemanticAnalyzer().analyze(node: try! Parser.parse(recipe1))
+        let parsedRecipe2 = SemanticAnalyzer().analyze(node: try! Parser.parse(recipe2))
 
         var table = IngredientTable()
 
         table = table + parsedRecipe1.ingredientsTable + parsedRecipe2.ingredientsTable
 
-        XCTAssertEqual(table.description, "chilli: 6; cinnamon: some; ginger: 20 g; honey: 4 tbsp; milk: 2 litres, 500 ml")
+        XCTAssertEqual(table.description, "chilli: 3; cinnamon: some; ginger: 10 g; honey: 2 tbsp; milk: 1 litre, 250 ml")
     }
     
 //    test valid ingridient: when only units, but no name of in
