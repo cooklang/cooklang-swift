@@ -20,24 +20,6 @@ extension IngredientTable: CustomStringConvertible {
     }
 }
 
-public extension IngredientTable {
-    static func + (left: IngredientTable, right: IngredientTable) -> IngredientTable {
-        var result = IngredientTable()
-
-        for (name, amounts) in left.ingredients {
-            result.add(name: name, amounts: amounts)
-        }
-
-        for (name, amounts) in right.ingredients {
-            result.add(name: name, amounts: amounts)
-        }
-
-        return result
-    }
-}
-
-
-
 extension IngredientAmount: CustomStringConvertible {
     public var description: String {
         if units == "" {

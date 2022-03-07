@@ -66,7 +66,7 @@ class SemanticAnalyzerTests: XCTestCase {
 
         var table = IngredientTable()
 
-        table = table + parsedRecipe1.ingredientsTable + parsedRecipe2.ingredientsTable
+        table = mergeIngredientTables(parsedRecipe1.ingredientsTable, parsedRecipe2.ingredientsTable)
 
         XCTAssertEqual(table.description, "chilli: 3; cinnamon: some; ginger: 10 g; honey: 2 tbsp; milk: 1 litre, 250 ml")
     }

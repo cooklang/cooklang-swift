@@ -24,7 +24,7 @@ class IngredientModelTests: XCTestCase {
         table2.add(name: "chilli", amount: IngredientAmount(ValueNode.integer(5), "items"))
         table1.add(name: "chilli", amount: IngredientAmount(ValueNode.integer(3), "small"))
 
-        XCTAssertEqual((table1 + table2).description, "chilli: 8 items, 1 medium, 3 small")
+        XCTAssertEqual(mergeIngredientTables(table1, table2).description, "chilli: 8 items, 1 medium, 3 small")
     }
 
     func testSameUnitsAndType() {

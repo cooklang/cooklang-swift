@@ -16,7 +16,7 @@ public struct Recipe {
 
     mutating func addStep(_ step: Step) {
         steps.append(step)
-        ingredientsTable = ingredientsTable + step.ingredientsTable
+        ingredientsTable = mergeIngredientTables(ingredientsTable, step.ingredientsTable) 
     }
 
     mutating func addEquipment(_ e: EquipmentNode) {
