@@ -18,10 +18,7 @@ class SemanticAnalyzerTests: XCTestCase {
             Add @chilli{3}, @ginger{10%g} and @milk{1%litre} place in #oven and cook for ~{10%minutes}
             """
 
-        let node = try! Parser.parse(program) as! RecipeNode
-
-        let analyzer = SemanticAnalyzer()
-        let parsedRecipe = analyzer.analyze(node: node)
+        let parsedRecipe = try! Recipe.from(text: program)
 
         var recipe = Recipe()
         recipe.metadata["cooking time"] = "30 min"
@@ -61,8 +58,8 @@ class SemanticAnalyzerTests: XCTestCase {
             Simmer @milk{250%ml} with @honey{2%tbsp} for ~{20%minutes}. Add a bit of @cinnamon.
             """
 
-        let parsedRecipe1 = SemanticAnalyzer().analyze(node: try! Parser.parse(recipe1))
-        let parsedRecipe2 = SemanticAnalyzer().analyze(node: try! Parser.parse(recipe2))
+        let parsedRecipe1 = try! Recipe.from(text: recipe1)
+        let parsedRecipe2 = try! Recipe.from(text: recipe2)
 
         var table = IngredientTable()
 
@@ -116,10 +113,7 @@ class SemanticAnalyzerTests: XCTestCase {
 
 
         measure {
-            let analyzer = SemanticAnalyzer()
-
-            let node = try! Parser.parse(recipe) as! RecipeNode
-            let parsedRecipe = analyzer.analyze(node: node)
+            let parsedRecipe = try! Recipe.from(text: recipe)
 
             XCTAssertEqual(parsedRecipe.ingredientsTable.description, "avocados: 2; black pepper: some; butter: 30 g; cannellini beans: 2 tins; cheddar cheese: 75 g; cherry tomatoes: 10; coriander: 1 bunch; eggs: 8 large; fresh red chilli: 2; garlic clove: 2; ground cumin: 1 pinch; lime: 2; olive oil: 1 tbsp; red chilli: 1 item; red onion: 1; salt: some; sea salt: some; smoked paprika: 1 pinch; sour cream: 200 ml; tinned tomatoes: 2 tins; tortillas: 6 large")
         }
@@ -154,11 +148,7 @@ class SemanticAnalyzerTests: XCTestCase {
 
             """
 
-
-        let analyzer = SemanticAnalyzer()
-
-        let node = try! Parser.parse(recipe) as! RecipeNode
-        let parsedRecipe = analyzer.analyze(node: node)
+        let parsedRecipe = try! Recipe.from(text: recipe)
 
         XCTAssertEqual(parsedRecipe.ingredientsTable.description, "bay leaves: 2; black pepper: 1 tsp; carrots: 1 large; garlic: 1 glove; ground coriander: 1 tsp; ground cumin: 1 tsp; lamb: 450 g; linguine pasta: 230 g; oil: some; onion: 1 medium; potatoes: 420 g; red peppers: 0.5 large; star anise: 1 small; tomatoes: 2 large; water: 1.4 kg")
 
@@ -190,11 +180,7 @@ class SemanticAnalyzerTests: XCTestCase {
             Enjoy with butter and sour cream.
             """
 
-
-        let analyzer = SemanticAnalyzer()
-
-        let node = try! Parser.parse(recipe) as! RecipeNode
-        let parsedRecipe = analyzer.analyze(node: node)
+        let parsedRecipe = try! Recipe.from(text: recipe)
 
         XCTAssertEqual(parsedRecipe.ingredientsTable.description, "black pepper: 0.25 tsp; butter: 110 g; chicken thighs: 450 g; egg: 1 large; flour: 530 g; garlic: 2 cloves; ground coriander: 0.5 tsp; ground cumin: 0.25 tsp; milk: 160 g; onion: 1 small; parsley: 1 bunch; potatoes: 450 g; salt: 1 tsp; water: 180 g")
 
@@ -239,11 +225,7 @@ class SemanticAnalyzerTests: XCTestCase {
             Enjoy with butter and sour cream.
             """
 
-
-        let analyzer = SemanticAnalyzer()
-
-        let node = try! Parser.parse(recipe) as! RecipeNode
-        let parsedRecipe = analyzer.analyze(node: node)
+        let parsedRecipe = try! Recipe.from(text: recipe)
 
         let text = parsedRecipe.steps.map{ step in
             step.directions.map { $0.description }.joined()

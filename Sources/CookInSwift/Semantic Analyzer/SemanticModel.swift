@@ -16,7 +16,7 @@ public struct Recipe {
 
     mutating func addStep(_ step: Step) {
         steps.append(step)
-        ingredientsTable = mergeIngredientTables(ingredientsTable, step.ingredientsTable) 
+        ingredientsTable = mergeIngredientTables(ingredientsTable, step.ingredientsTable)
     }
 
     mutating func addEquipment(_ e: EquipmentNode) {
@@ -27,6 +27,14 @@ public struct Recipe {
         m.forEach{ item in
             metadata[item.key] = item.value.description
         }
+    }
+
+    public static func from(text: String) throws -> Recipe {
+        let analyzer = SemanticAnalyzer()
+
+        let node = try Parser.parse(text) as! RecipeNode
+
+        return analyzer.analyze(node: node)
     }
 
 }
