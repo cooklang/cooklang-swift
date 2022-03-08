@@ -10,7 +10,7 @@ import Foundation
 
 public protocol AST {}
 
-public enum ValueNode: AST {
+enum ValueNode: AST {
     case integer(Int)
     case decimal(Decimal)
     case string(String)
