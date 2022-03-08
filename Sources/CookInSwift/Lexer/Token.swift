@@ -9,12 +9,12 @@
 import Foundation
 
 
-public enum Braces {
+enum Braces {
     case left
     case right
 }
 
-public enum Constant {
+enum Constant {
     case integer(Int)
     case decimal(Decimal)
     case fractional((Int, Int))
@@ -22,7 +22,7 @@ public enum Constant {
     case space
 }
 
-public enum Token {
+enum Token {
     case eof
     case eol
     case at

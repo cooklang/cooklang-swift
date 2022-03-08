@@ -13,7 +13,7 @@ protocol Literal {
 }
 
 extension Token: Equatable {
-    public static func == (lhs: Token, rhs: Token) -> Bool {
+    static func == (lhs: Token, rhs: Token) -> Bool {
         switch (lhs, rhs) {
         case (.eof, .eof):
             return true
@@ -44,7 +44,7 @@ extension Token: Equatable {
 }
 
 extension Constant: Equatable {
-    public static func == (lhs: Constant, rhs: Constant) -> Bool {
+    static func == (lhs: Constant, rhs: Constant) -> Bool {
         switch (lhs, rhs) {
         case let (.integer(left), .integer(right)):
             return left == right
@@ -63,7 +63,7 @@ extension Constant: Equatable {
 }
 
 extension Token: Literal {
-    public var literal: String {
+    var literal: String {
         get {
             switch self {
             case .at:
@@ -94,7 +94,7 @@ extension Token: Literal {
 }
 
 extension Braces: Literal {
-    public var literal: String {
+    var literal: String {
         get {
             switch self {
             case .left:
@@ -107,7 +107,7 @@ extension Braces: Literal {
 }
 
 extension Constant: Literal {
-    public var literal: String {
+    var literal: String {
         get {
             switch self {
             case let .integer(value):
@@ -126,7 +126,7 @@ extension Constant: Literal {
 }
 
 extension Braces: CustomStringConvertible {
-    public var description: String {
+    var description: String {
         switch self {
         case .left:
             return "LBRACE"
@@ -137,7 +137,7 @@ extension Braces: CustomStringConvertible {
 }
 
 extension Constant: CustomStringConvertible {
-    public var description: String {
+    var description: String {
         switch self {
         case let .integer(value):
             return "INTEGER_CONST(\(value))"
@@ -154,7 +154,7 @@ extension Constant: CustomStringConvertible {
 }
 
 extension Token: CustomStringConvertible {
-    public var description: String {
+    var description: String {
         switch self {
         case .eof:
             return "EOF"
