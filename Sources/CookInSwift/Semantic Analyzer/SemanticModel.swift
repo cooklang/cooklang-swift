@@ -125,7 +125,6 @@ public struct Equipment: DirectionItem {
 }
 
 public struct Timer: DirectionItem {
-//    TODO remove refs to internal ValuesNode
     public var quantity: ValueProtocol
     public var units: String
 
@@ -134,7 +133,6 @@ public struct Timer: DirectionItem {
         self.units = units
     }
 
-//    TODO figure out how to make it DRY
     init(_ quantity: Int, _ units: String) {
         self.quantity = quantity
         self.units = units

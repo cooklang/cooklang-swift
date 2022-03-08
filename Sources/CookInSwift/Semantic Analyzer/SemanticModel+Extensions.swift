@@ -96,40 +96,7 @@ extension Timer: Equatable {
 
 extension Timer: CustomStringConvertible {
     public var description: String {
-        switch quantity {
-        case let value as Decimal:
-            // when summing up quantities converted to Decimal in IngredientsTable
-            // here we want to check if value can be converted back to integer before representation
-            if let v = Int("\(value)") {
-                if units == "" {
-                    return "\(value)"
-                } else {
-                    return "\(value) \(units.pluralize(v))"
-                }
-            } else {
-                if units == "" {
-                    return "\(value.cleanValue)"
-                } else {
-                    return "\(value.cleanValue) \(units.pluralize(2))"
-                }
-            }
-        case is String:
-            if units == "" {
-                return "\(quantity)"
-            } else {
-                return "\(quantity) \(units.pluralize(2))"
-            }
-
-        case let value as Int:
-            if units == "" {
-                return "\(value)"
-            } else {
-                return "\(value) \(units.pluralize(value))"
-            }
-
-        default:
-            return ""
-        }
+        return displayAmount(quantity: quantity, units: units)
     }
 }
 
