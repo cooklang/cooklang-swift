@@ -45,7 +45,7 @@ public struct IngredientAmountCollection {
 
     mutating func add(_ amount: IngredientAmount) {
         // TODO locale
-        let units = amount.units.singularize
+        let units = Inflector.shared.singularize(string: amount.units)
 
         switch amount.quantity.self {
         case let value as Int:

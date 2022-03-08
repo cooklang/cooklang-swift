@@ -33,9 +33,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import Foundation
 
-let inflector = Inflector()
-
 class Inflector {
+    static var shared = Inflector()
     private var pluralRules: [InflectorRule] = []
     private var singularRules: [InflectorRule] = []
     private var words: Set<String> = Set<String>()
@@ -60,6 +59,11 @@ class Inflector {
     
     func pluralize(string: String) -> String {
         return apply(rules: pluralRules, forString: string)
+    }
+
+    func pluralize(string: String, count: Int) -> String {
+        if count == 1 { return singularize(string: string) }
+        return pluralize(string: string)
     }
     
     func singularize(string: String) -> String {
@@ -180,47 +184,4 @@ fileprivate let irregulars = [
 struct InflectorRule {
     var rule: String
     var replacement: String
-}
-
-
-
-// MARK: - Inflections
-public extension String {
-    
-    /// Returns the plural form of the word in the string.
-    var pluralize: String {
-        return inflector.pluralize(string: self)
-    }
-    
-    /// Returns the plural form of the word in the string.
-    ///
-    ///     "person".pluralize        #=> "people"
-    ///     "monkey".pluralize        #=> "monkeys"
-    ///     "user".pluralize        #=> "users"
-    ///     "man".pluralize        #=> "men"
-    ///
-    /// If the parameter count is specified, the singular form will be returned if count == 1.
-    ///
-    ///     "men".pluralize(1)        #=> "man"
-    ///
-    /// For any other value of count the plural will be returned.
-    ///
-    /// - Parameter count: If specified, the singular form will be returned if count == 1
-    /// - Returns: A string in plural form of the word
-    func pluralize(_ count: Int = 2) -> String {
-        if count == 1 { return singularize }
-        return pluralize
-    }
-    
-    /// The reverse of `pluralize`, returns the singular form of a word in a string.
-    ///
-    ///     "people".singularize        #=> "person"
-    ///     "monkeys".singularize        #=> "monkey"
-    ///     "users".singularize         #=> "user"
-    ///     "men".singularize           #=> "man"
-    ///
-    var singularize: String {
-        return inflector.singularize(string: self)
-    }
-    
 }

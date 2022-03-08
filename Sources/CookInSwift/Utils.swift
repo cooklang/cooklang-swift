@@ -135,33 +135,34 @@ func treeString<T>(_ node: T, using nodeInfo: (T) -> (String, T?, T?)) -> String
 func displayAmount(quantity: ValueProtocol, units: String) -> String {
     switch quantity {
     case let value as Decimal:
+        // TODO locale
         // when summing up quantities converted to Decimal in IngredientsTable
         // here we want to check if value can be converted back to integer before representation
         if let v = Int("\(value)") {
             if units == "" {
                 return "\(value)"
             } else {
-                return "\(value) \(units.pluralize(v))"
+                return "\(value) \(Inflector.shared.pluralize(string: units, count: v))"
             }
         } else {
             if units == "" {
                 return "\(value.cleanValue)"
             } else {
-                return "\(value.cleanValue) \(units.pluralize(2))"
+                return "\(value.cleanValue) \(Inflector.shared.pluralize(string: units, count: 2))"
             }
         }
     case is String:
         if units == "" {
             return "\(quantity)"
         } else {
-            return "\(quantity) \(units.pluralize(2))"
+            return "\(quantity) \(Inflector.shared.pluralize(string: units, count: 2))"
         }
 
     case let value as Int:
         if units == "" {
             return "\(value)"
         } else {
-            return "\(value) \(units.pluralize(value))"
+            return "\(value) \(Inflector.shared.pluralize(string: units, count: value))"
         }
 
     default:
