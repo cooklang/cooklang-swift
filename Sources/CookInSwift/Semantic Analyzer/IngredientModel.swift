@@ -7,19 +7,34 @@
 
 import Foundation
 
+public protocol ValueProtocol {}
+
+extension String:ValueProtocol{}
+extension Int:ValueProtocol{}
+extension Decimal:ValueProtocol{}
 
 public struct IngredientAmount {
 //    TODO remove refs to internal ValuesNode
-    public var quantity: ValueNode
+    public var quantity: ValueProtocol
     public var units: String
 
-    init(_ quantity: ValueNode, _ units: String) {
+    init(_ quantity: ValueProtocol, _ units: String) {
         self.quantity = quantity
         self.units = units
-    }  
+    }
 
     init(_ quantity: Int, _ units: String) {
-        self.quantity = ValueNode(quantity)
+        self.quantity = quantity
+        self.units = units
+    }
+
+    init(_ quantity: Decimal, _ units: String) {
+        self.quantity = quantity
+        self.units = units
+    }
+
+    init(_ quantity: String, _ units: String) {
+        self.quantity = quantity
         self.units = units
     }
 }
@@ -33,13 +48,15 @@ public struct IngredientAmountCollection {
         let units = amount.units.singularize
 
         // TODO
-        switch amount.quantity {
-        case let .integer(value):
+        switch amount.quantity.self {
+        case let value as Int:
             amountsCountable[units] = amountsCountable[units, default: 0] + Decimal(value)
-        case let .decimal(value):
+        case let value as Decimal:
             amountsCountable[units] = amountsCountable[units, default: 0] + value
-        case let .string(value):
+        case let value as String:
             amountsUncountable[amount.units] = value
+        default:
+            fatalError("Unrecognised value type")
         }
     }
 }

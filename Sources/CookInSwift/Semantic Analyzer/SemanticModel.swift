@@ -47,7 +47,18 @@ public struct Step {
 
     mutating func addIngredient(_ ingredient: IngredientNode) {
         let name = ingredient.name
-        let amount = IngredientAmount(ingredient.amount.quantity, ingredient.amount.units)
+        var quantity: ValueProtocol
+
+        switch ingredient.amount.quantity {
+        case let .integer(value):
+            quantity = value
+        case let .decimal(value):
+            quantity = value
+        case let .string(value):
+            quantity = value
+        }
+
+        let amount = IngredientAmount(quantity, ingredient.amount.units)
         let ingredient = Ingredient(name, amount)
 
         ingredientsTable.add(name: name, amount: amount)
