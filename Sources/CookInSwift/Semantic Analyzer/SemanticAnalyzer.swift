@@ -14,7 +14,7 @@ public class SemanticAnalyzer: Visitor {
 
     public init() {}
 
-    public func analyze(node: AST) -> Recipe {
+    func analyze(node: AST) -> Recipe {
         visit(node: node)
         
         return currentRecipe

@@ -9,9 +9,9 @@ import Foundation
 
 public protocol ValueProtocol {}
 
-extension String:ValueProtocol{}
-extension Int:ValueProtocol{}
-extension Decimal:ValueProtocol{}
+extension String:ValueProtocol {}
+extension Int:ValueProtocol {}
+extension Decimal:ValueProtocol {}
 
 public struct IngredientAmount {
 //    TODO remove refs to internal ValuesNode

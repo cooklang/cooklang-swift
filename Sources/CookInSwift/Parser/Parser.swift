@@ -481,7 +481,7 @@ class Parser {
     /**
 
      */
-    public func parse() -> AST {
+    func parse() -> AST {
         let node = recipe()
 
         if currentToken != .eof {
