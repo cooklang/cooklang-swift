@@ -66,7 +66,18 @@ public struct Step {
     }
 
     mutating func addTimer(_ timer: TimerNode) {
-        let timer = Timer(timer.quantity, timer.units)
+        var quantity: ValueProtocol
+
+        switch timer.quantity {
+        case let .integer(value):
+            quantity = value
+        case let .decimal(value):
+            quantity = value
+        case let .string(value):
+            quantity = value
+        }
+
+        let timer = Timer(quantity, timer.units)
 
         timers.append(timer)
         directions.append(timer)
@@ -115,27 +126,27 @@ public struct Equipment: DirectionItem {
 
 public struct Timer: DirectionItem {
 //    TODO remove refs to internal ValuesNode
-    public var quantity: ValueNode
+    public var quantity: ValueProtocol
     public var units: String
 
-    init(_ quantity: ValueNode, _ units: String) {
+    init(_ quantity: ValueProtocol, _ units: String) {
         self.quantity = quantity
         self.units = units
     }
 
 //    TODO figure out how to make it DRY
     init(_ quantity: Int, _ units: String) {
-        self.quantity = ValueNode(quantity)
+        self.quantity = quantity
         self.units = units
     }
 
     init(_ quantity: String, _ units: String) {
-        self.quantity = ValueNode(quantity)
+        self.quantity = quantity
         self.units = units
     }
 
     init(_ quantity: Decimal, _ units: String) {
-        self.quantity = ValueNode(quantity)
+        self.quantity = quantity
         self.units = units
     }
 }

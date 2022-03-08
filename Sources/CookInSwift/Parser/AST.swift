@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol AST {}
+protocol AST {}
 
 enum ValueNode: AST {
     case integer(Int)

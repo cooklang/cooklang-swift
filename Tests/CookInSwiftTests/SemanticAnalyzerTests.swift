@@ -249,7 +249,7 @@ class SemanticAnalyzerTests: XCTestCase {
                               "@",
                               "~",
                               "#",
-                              "Take a square, place one corner over the other 0  pinch together. Take the other corner and repeat. Pinch together the four openings. Now take the two edges and pinch them together as well, placing over edge over the other.",
+                              "Take a square, place one corner over the other 0 pinch together. Take the other corner and repeat. Pinch together the four openings. Now take the two edges and pinch them together as well, placing over edge over the other.",
                               "Add water to a tiered steamer. Lay out Manti on tiers. Cover steamer and cook 20-25 minutes. All steamers are different, check a Manti to see if it\'s ready. If using different meat, it\'ll need about 40 - 60 minutes.",
                               "Enjoy with butter and sour cream."]
 

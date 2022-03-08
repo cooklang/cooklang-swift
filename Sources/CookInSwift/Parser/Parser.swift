@@ -27,7 +27,7 @@ enum ParserError: Error {
     case terminatorNotFound
 }
 
-public class Parser {
+class Parser {
 
     // MARK: - Fields
 
@@ -42,11 +42,11 @@ public class Parser {
         return tokens[tokenIndex + 1]
     }
 
-    public init(_ tokens: [Token]) {
+    init(_ tokens: [Token]) {
         self.tokens = tokens
     }
 
-    public static func parse(_ text: String) throws -> AST {
+    static func parse(_ text: String) throws -> AST {
         let lexer = Lexer(text)
         let tokens = lexer.lex()
         let parser = Parser(tokens)
@@ -481,7 +481,7 @@ public class Parser {
     /**
 
      */
-    public func parse() -> AST {
+    func parse() -> AST {
         let node = recipe()
 
         if currentToken != .eof {

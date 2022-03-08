@@ -33,7 +33,7 @@ extension ValueNode {
 
 
 extension ValueNode: CustomStringConvertible {
-    public var description: String {
+    var description: String {
         switch self {
         case let .integer(value):
             return "\(value)"
@@ -46,7 +46,7 @@ extension ValueNode: CustomStringConvertible {
 }
 
 extension ValueNode: Equatable {
-    public static func == (lhs: ValueNode, rhs: ValueNode) -> Bool {
+    static func == (lhs: ValueNode, rhs: ValueNode) -> Bool {
         switch (lhs, rhs) {
         case let (.integer(left), .integer(right)):
             return left == right
@@ -67,32 +67,32 @@ extension ValueNode: Equatable {
 }
 
 extension RecipeNode: Equatable {
-    public static func == (lhs: RecipeNode, rhs: RecipeNode) -> Bool {
+    static func == (lhs: RecipeNode, rhs: RecipeNode) -> Bool {
         return lhs.steps == rhs.steps && lhs.metadata == rhs.metadata
     }
 }
 
 extension StepNode: Equatable {
-    public static func == (lhs: StepNode, rhs: StepNode) -> Bool {
+    static func == (lhs: StepNode, rhs: StepNode) -> Bool {
         return lhs.instructions.map{ ($0.value ) }  == rhs.instructions.map{ ($0.value ) }
     }
 }
 
 
 extension MetadataNode: Equatable {
-    public static func == (lhs: MetadataNode, rhs: MetadataNode) -> Bool {
+    static func == (lhs: MetadataNode, rhs: MetadataNode) -> Bool {
         return lhs.key == rhs.key && lhs.value == rhs.value
     }
 }
 
 extension EquipmentNode: Equatable {
-    public static func == (lhs: EquipmentNode, rhs: EquipmentNode) -> Bool {
+    static func == (lhs: EquipmentNode, rhs: EquipmentNode) -> Bool {
         return lhs.name == rhs.name
     }
 }
 
 extension TimerNode: Equatable {
-    public static func == (lhs: TimerNode, rhs: TimerNode) -> Bool {
+    static func == (lhs: TimerNode, rhs: TimerNode) -> Bool {
         return lhs.quantity == rhs.quantity && lhs.units == rhs.units
     }
 }
@@ -175,6 +175,6 @@ extension AST {
             .map { childIndent + $0 }
     }
 
-    public func printTree() -> String { return treeLines().joined(separator: "\n") }
+    func printTree() -> String { return treeLines().joined(separator: "\n") }
 }
 

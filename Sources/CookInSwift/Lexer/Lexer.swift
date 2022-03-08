@@ -20,7 +20,7 @@ enum NumberParseStrategy {
 /**
  Basic lexical analyzer converting program text into tokens
  */
-public class Lexer {
+class Lexer {
 
     // MARK: - Fields
     private let onlyLetters = CharacterSet.letters.subtracting(CharacterSet.nonBaseCharacters)
@@ -31,7 +31,7 @@ public class Lexer {
 
     // MARK: - Constants
 
-    public init(_ text: String) {
+    init(_ text: String) {
         self.text = Array(text.unicodeScalars)
         self.count = self.text.count
         currentPosition = 0
@@ -301,7 +301,7 @@ public class Lexer {
 
      - Returns: Next token in text
      */
-    public func getNextToken() -> Token {
+    func getNextToken() -> Token {
         while let currentCharacter = currentCharacter {            
             if CharacterSet.newlines.contains(currentCharacter) {
                 skipNewlines()
@@ -411,7 +411,7 @@ public class Lexer {
         return .eof
     }
 
-    public func lex() -> [Token] {
+    func lex() -> [Token] {
         var token = getNextToken()
         var all = [token]
         while token != .eof {

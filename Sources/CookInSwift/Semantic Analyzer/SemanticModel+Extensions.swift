@@ -69,16 +69,66 @@ extension Equipment: CustomStringConvertible {
 
 extension Timer: Equatable {
     public static func == (lhs: Timer, rhs: Timer) -> Bool {
-        return lhs.quantity == rhs.quantity
+        switch lhs.quantity.self {
+        case let lhsValue as Int:
+            if type(of: rhs.quantity) == Int.self {
+                return lhsValue == (rhs.quantity as! Int)
+            } else {
+                return false
+            }
+        case let lhsValue as Decimal:
+            if type(of: rhs.quantity) == Decimal.self {
+                return lhsValue == (rhs.quantity as! Decimal)
+            } else {
+                return false
+            }
+        case let lhsValue as String:
+            if type(of: rhs.quantity) == String.self {
+                return lhsValue == (rhs.quantity as! String)
+            } else {
+                return false
+            }
+        default:
+            fatalError("Unrecognised value type")
+        }
     }
 }
 
 extension Timer: CustomStringConvertible {
     public var description: String {
-        if let v = Int(quantity.value) {
-            return "\(quantity.value) \(units.pluralize(v))"
-        } else {
-            return "\(quantity.value) \(units.pluralize(2))"
+        switch quantity {
+        case let value as Decimal:
+            // when summing up quantities converted to Decimal in IngredientsTable
+            // here we want to check if value can be converted back to integer before representation
+            if let v = Int("\(value)") {
+                if units == "" {
+                    return "\(value)"
+                } else {
+                    return "\(value) \(units.pluralize(v))"
+                }
+            } else {
+                if units == "" {
+                    return "\(value.cleanValue)"
+                } else {
+                    return "\(value.cleanValue) \(units.pluralize(2))"
+                }
+            }
+        case is String:
+            if units == "" {
+                return "\(quantity)"
+            } else {
+                return "\(quantity) \(units.pluralize(2))"
+            }
+
+        case let value as Int:
+            if units == "" {
+                return "\(value)"
+            } else {
+                return "\(value) \(units.pluralize(value))"
+            }
+
+        default:
+            return ""
         }
     }
 }
