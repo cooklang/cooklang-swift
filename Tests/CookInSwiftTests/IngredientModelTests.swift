@@ -14,94 +14,94 @@ import XCTest
 class IngredientModelTests: XCTestCase {
 
     func testIngredientTableAddition() {
-        let table1 = IngredientTable()
+        var table1 = IngredientTable()
 
-        table1.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(3), "items"))
-        table1.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(1), "medium"))
+        table1.add(name: "chilli", amount: IngredientAmount(3, "items"))
+        table1.add(name: "chilli", amount: IngredientAmount(1, "medium"))
 
-        let table2 = IngredientTable()
+        var table2 = IngredientTable()
 
-        table2.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(5), "items"))
-        table1.add(name: "chilli", amount: IngredientAmount(ConstantNode.integer(3), "small"))
+        table2.add(name: "chilli", amount: IngredientAmount(5, "items"))
+        table1.add(name: "chilli", amount: IngredientAmount(3, "small"))
 
-        XCTAssertEqual((table1 + table2).description, "chilli: 8 items, 1 medium, 3 small")
+        XCTAssertEqual(mergeIngredientTables(table1, table2).description, "chilli: 8 items, 1 medium, 3 small")
     }
 
     func testSameUnitsAndType() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
         
-        collection.add(IngredientAmount(ConstantNode.integer(1), "g"))
-        collection.add(IngredientAmount(ConstantNode.integer(3), "g"))
+        collection.add(IngredientAmount(1, "g"))
+        collection.add(IngredientAmount(3, "g"))
             
         
         XCTAssertEqual(collection.description, "4 g")
     }
     
     func testDifferentUnits() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
         
-        collection.add(IngredientAmount(ConstantNode.integer(50), "g"))
-        collection.add(IngredientAmount(ConstantNode.integer(50), "g"))
-        collection.add(IngredientAmount(ConstantNode.integer(1), "kg"))
+        collection.add(IngredientAmount(50, "g"))
+        collection.add(IngredientAmount(50, "g"))
+        collection.add(IngredientAmount(1, "kg"))
             
         
         XCTAssertEqual(collection.description, "100 g, 1 kg")
     }
     
     func testDifferenQuantityTypes() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
                 
-        collection.add(IngredientAmount(ConstantNode.integer(500), "g"))
-        collection.add(IngredientAmount(ConstantNode.decimal(1.5), "kg"))
-        collection.add(IngredientAmount(ConstantNode.decimal(1), "kg"))
+        collection.add(IngredientAmount(500, "g"))
+        collection.add(IngredientAmount(1.5, "kg"))
+        collection.add(IngredientAmount(Decimal(1), "kg"))
             
         
         XCTAssertEqual(collection.description, "500 g, 2.5 kg")
     }
     
     func testFractionsQuantityTypes() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
                 
-        collection.add(IngredientAmount(ConstantNode.decimal(0.5), "cup"))
-        collection.add(IngredientAmount(ConstantNode.integer(1), "cup"))
+        collection.add(IngredientAmount(0.5, "cup"))
+        collection.add(IngredientAmount(1, "cup"))
             
         
         XCTAssertEqual(collection.description, "1.5 cups")
     }
 
     func testFractionsQuantityDecimalTypes() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
 
-        collection.add(IngredientAmount(ConstantNode.decimal(Decimal(1) / Decimal(3)), "cup"))
-        collection.add(IngredientAmount(ConstantNode.integer(1), "cup"))
+        collection.add(IngredientAmount(Decimal(1) / Decimal(3), "cup"))
+        collection.add(IngredientAmount(1, "cup"))
 
 
         XCTAssertEqual(collection.description, "1.3 cups")
     }
     
     func testWithPluralUnits() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
                 
-        collection.add(IngredientAmount(ConstantNode.integer(1), "cup"))
-        collection.add(IngredientAmount(ConstantNode.integer(2), "cups"))
+        collection.add(IngredientAmount(1, "cup"))
+        collection.add(IngredientAmount(2, "cups"))
             
         
         XCTAssertEqual(collection.description, "3 cups")
     }
     
     func testWithPluralAndSingularIngredient() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
 
-        collection.add(IngredientAmount(ConstantNode.integer(1), "onion"))
-        collection.add(IngredientAmount(ConstantNode.integer(2), "onions"))
+        collection.add(IngredientAmount(1, "onion"))
+        collection.add(IngredientAmount(2, "onions"))
 
         XCTAssertEqual(collection.description, "3 onions")
     }
     
     func testWithTextQuantity() {
-        let collection = IngredientAmountCollection()
+        var collection = IngredientAmountCollection()
                 
-        collection.add(IngredientAmount(ConstantNode.string("few"), "springs"))
+        collection.add(IngredientAmount("few", "springs"))
         
         XCTAssertEqual(collection.description, "few springs")
     }

@@ -9,12 +9,12 @@
 import Foundation
 
 public class SemanticAnalyzer: Visitor {
-    private var currentStep: SemanticStep = SemanticStep()
-    private var currentRecipe: SemanticRecipe = SemanticRecipe()
+    private var currentStep: Step = Step()
+    private var currentRecipe: Recipe = Recipe()
 
     public init() {}
 
-    public func analyze(node: AST) -> SemanticRecipe {
+    public func analyze(node: AST) -> Recipe {
         visit(node: node)
         
         return currentRecipe
@@ -44,7 +44,7 @@ public class SemanticAnalyzer: Visitor {
             visit(step: step)
 
             currentRecipe.addStep(currentStep)
-            currentStep = SemanticStep()
+            currentStep = Step()
         }
     }
     

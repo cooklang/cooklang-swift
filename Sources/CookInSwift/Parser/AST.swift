@@ -10,42 +10,10 @@ import Foundation
 
 public protocol AST {}
 
-public enum ConstantNode: AST {
+public enum ValueNode: AST {
     case integer(Int)
     case decimal(Decimal)
     case string(String)
-}
-
-public struct ValuesNode: AST {
-    var values: [ConstantNode]
-
-    init()  {
-        values = []
-    }
-
-    init(_ value: ConstantNode)  {
-        values = [value]
-    }
-
-    init(_ value: String) {
-        values = [ConstantNode(value)]
-    }
-
-    init(_ value: Int) {
-        values = [ConstantNode(value)]
-    }
-
-    init(_ value: Decimal) {
-        values = [ConstantNode(value)]
-    }
-
-    mutating func add(_ value: ConstantNode) {
-        values.append(value)
-    }
-
-    func isEmpty() -> Bool {
-        return values.isEmpty
-    }
 }
 
 struct DirectionNode: AST {
@@ -57,34 +25,27 @@ struct DirectionNode: AST {
 }
 
 
-
-
 struct MetadataNode: AST {
     let key: String
-    let value: ValuesNode
+    let value: ValueNode
 
-    init(_ key: String, _ value: ValuesNode) {
+    init(_ key: String, _ value: ValueNode) {
         self.key = key
         self.value = value
     }
 
-    init(_ key: String, _ value: ConstantNode) {
-        self.key = key
-        self.value = ValuesNode(value)
-    }
-
     init(_ key: String, _ value: String) {
-        self.value = ValuesNode(ConstantNode.string(value))
+        self.value = ValueNode.string(value)
         self.key = key
     }
 
     init(_ key: String, _ value: Int) {
-        self.value = ValuesNode(ConstantNode.integer(value))
+        self.value = ValueNode.integer(value)
         self.key = key
     }
 
     init(_ key: String, _ value: Decimal) {
-        self.value = ValuesNode(ConstantNode.decimal(value))
+        self.value = ValueNode.decimal(value)
         self.key = key
     }
 
@@ -92,31 +53,26 @@ struct MetadataNode: AST {
 
 
 struct AmountNode: AST {
-    let quantity: ValuesNode
+    let quantity: ValueNode
     let units: String
 
-    init(quantity: ValuesNode, units: String = "") {
+    init(quantity: ValueNode, units: String = "") {
         self.quantity = quantity
         self.units = units
     }
 
-    init(quantity: ConstantNode, units: String = "") {
-        self.quantity = ValuesNode(quantity)
-        self.units = units
-    }
-
     init(quantity: String, units: String = "") {
-        self.quantity = ValuesNode(ConstantNode.string(quantity))
+        self.quantity = ValueNode.string(quantity)
         self.units = units
     }
 
     init(quantity: Int, units: String = "") {
-        self.quantity = ValuesNode(ConstantNode.integer(quantity))
+        self.quantity = ValueNode.integer(quantity)
         self.units = units
     }
 
     init(quantity: Decimal, units: String = "") {
-        self.quantity = ValuesNode(ConstantNode.decimal(quantity))
+        self.quantity = ValueNode.decimal(quantity)
         self.units = units
     }
 
@@ -134,45 +90,39 @@ struct IngredientNode: AST {
 
 struct EquipmentNode: AST {
     let name: String
-    let quantity: ValuesNode?
+    let quantity: ValueNode?
 
-    init(name: String, quantity: ValuesNode? = nil) {
+    init(name: String, quantity: ValueNode? = nil) {
         self.name = name
         self.quantity = quantity
     }
 }
 
 struct TimerNode: AST {
-    let quantity: ValuesNode
+    let quantity: ValueNode
     let units: String
     let name: String
 
-    init(quantity: ValuesNode, units: String, name: String = "") {
+    init(quantity: ValueNode, units: String, name: String = "") {
         self.quantity = quantity
         self.units = units
         self.name = name
     }
 
-    init(quantity: ConstantNode, units: String, name: String = "") {
-        self.quantity = ValuesNode(quantity)
-        self.units = units
-        self.name = name
-    }
-
     init(quantity: String, units: String, name: String = "") {
-        self.quantity = ValuesNode(ConstantNode.string(quantity))
+        self.quantity = ValueNode.string(quantity)
         self.units = units
         self.name = name
     }
 
     init(quantity: Int, units: String, name: String = "") {
-        self.quantity = ValuesNode(ConstantNode.integer(quantity))
+        self.quantity = ValueNode.integer(quantity)
         self.units = units
         self.name = name
     }
 
     init(quantity: Decimal, units: String, name: String = "") {
-        self.quantity = ValuesNode(ConstantNode.decimal(quantity))
+        self.quantity = ValueNode.decimal(quantity)
         self.units = units
         self.name = name
     }

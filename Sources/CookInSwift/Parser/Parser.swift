@@ -148,8 +148,8 @@ public class Parser {
     /**
 
      */
-    private func values() -> ValuesNode {
-        var v = ValuesNode()
+    private func values(defaultValue: ValueNode) -> ValueNode {
+        var v = defaultValue
 
         var strategy: QuantityParseStrategy = .string
         var i = tokenIndex
@@ -189,16 +189,16 @@ public class Parser {
             switch currentToken {
 
             case let .constant(.decimal(value)):
-                v.add(ConstantNode.decimal(value))
+                v = ValueNode.decimal(value)
                 eat(.constant(.decimal(value)))
 
             case let .constant(.integer(value)):
                 eat(.constant(.integer(value)))
-                v.add(ConstantNode.integer(value))
+                v = ValueNode.integer(value)
 
             case let .constant(.fractional((n, d))):
                 eat(.constant(.fractional((n, d))))
-                v.add(ConstantNode.decimal(Decimal(n) / Decimal(d)))
+                v = ValueNode.decimal(Decimal(n) / Decimal(d))
 
             default:
                 if !(currentToken == .braces(.right) || currentToken == .percent) {
@@ -218,7 +218,7 @@ public class Parser {
             }
 
             if value != "" {
-                v.add(ConstantNode.string(value))
+                v = ValueNode.string(value)
             }
         }
 
@@ -233,7 +233,7 @@ public class Parser {
     private func amount() throws -> AmountNode {
         eat(.braces(.left))
 
-        var q = values()
+        var q = values(defaultValue: ValueNode.string(""))
 
         var units = ""
 
@@ -245,11 +245,9 @@ public class Parser {
 
         eat(.braces(.right))
 
-        if q.isEmpty() {
+        if q.value == "" {
             if units.isEmpty {
-                q.add(ConstantNode.string("some"))
-            } else {
-                q.add(ConstantNode.string(""))
+                q = ValueNode.string("some")
             }
         }
 
@@ -358,7 +356,7 @@ public class Parser {
         eat(.tilde)
         let name = taggedName()
         eat(.braces(.left))
-        var quantity = values()
+        let quantity = values(defaultValue: ValueNode.integer(0))
         var units = ""
         if currentToken == .percent {
             eat(.percent)
@@ -374,10 +372,6 @@ public class Parser {
         }
 
         eat(.braces(.right))
-
-        if quantity.isEmpty() {
-            quantity.add(ConstantNode.integer(0))
-        }
 
         return TimerNode(quantity: quantity, units: units, name: name)
     }

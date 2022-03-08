@@ -7,57 +7,67 @@
 
 import Foundation
 
+public protocol ValueProtocol {}
 
-public class IngredientAmount {
+extension String:ValueProtocol{}
+extension Int:ValueProtocol{}
+extension Decimal:ValueProtocol{}
+
+public struct IngredientAmount {
 //    TODO remove refs to internal ValuesNode
-    public var quantity: ValuesNode
+    public var quantity: ValueProtocol
     public var units: String
 
-    init(_ quantity: ValuesNode, _ units: String) {
+    init(_ quantity: ValueProtocol, _ units: String) {
         self.quantity = quantity
         self.units = units
     }
 
-    init(_ quantity: ConstantNode, _ units: String) {
-        self.quantity = ValuesNode(quantity)
+    init(_ quantity: Int, _ units: String) {
+        self.quantity = quantity
         self.units = units
     }
 
-    init(_ quantity: Int, _ units: String) {
-        self.quantity = ValuesNode(quantity)
+    init(_ quantity: Decimal, _ units: String) {
+        self.quantity = quantity
+        self.units = units
+    }
+
+    init(_ quantity: String, _ units: String) {
+        self.quantity = quantity
         self.units = units
     }
 }
 
 
-public class IngredientAmountCollection {
+public struct IngredientAmountCollection {
     var amountsCountable: [String: Decimal] = [:]
     var amountsUncountable: [String: String] = [:]
 
-    func add(_ amount: IngredientAmount) {
+    mutating func add(_ amount: IngredientAmount) {
         let units = amount.units.singularize
 
         // TODO
-        switch amount.quantity.values.first {
-        case let .integer(value):
+        switch amount.quantity.self {
+        case let value as Int:
             amountsCountable[units] = amountsCountable[units, default: 0] + Decimal(value)
-        case let .decimal(value):
+        case let value as Decimal:
             amountsCountable[units] = amountsCountable[units, default: 0] + value
-        case let .string(value):
+        case let value as String:
             amountsUncountable[amount.units] = value
-        case .none:
-            fatalError("Shite!")
+        default:
+            fatalError("Unrecognised value type")
         }
     }
 }
 
-public class IngredientTable {
+public struct IngredientTable {
     public var ingredients: [String: IngredientAmountCollection] = [:]
 
     public init() {
     }
 
-    public func add(name: String, amount: IngredientAmount) {
+    mutating public func add(name: String, amount: IngredientAmount) {
         if ingredients[name] == nil {
             ingredients[name] = IngredientAmountCollection()
         }
@@ -65,7 +75,7 @@ public class IngredientTable {
         ingredients[name]?.add(amount)
     }
 
-    public func add(name: String, amounts: IngredientAmountCollection) {
+    mutating public func add(name: String, amounts: IngredientAmountCollection) {
         amounts.forEach {
             add(name: name, amount: $0)
         }

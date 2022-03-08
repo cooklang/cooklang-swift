@@ -17,7 +17,7 @@ extension Decimal {
 }
 
 
-extension ConstantNode {
+extension ValueNode {
     init(_ value: Int) {
         self = .integer(value)
     }
@@ -32,7 +32,7 @@ extension ConstantNode {
 }
 
 
-extension ConstantNode: CustomStringConvertible {
+extension ValueNode: CustomStringConvertible {
     public var description: String {
         switch self {
         case let .integer(value):
@@ -45,8 +45,8 @@ extension ConstantNode: CustomStringConvertible {
     }
 }
 
-extension ConstantNode: Equatable {
-    public static func == (lhs: ConstantNode, rhs: ConstantNode) -> Bool {
+extension ValueNode: Equatable {
+    public static func == (lhs: ValueNode, rhs: ValueNode) -> Bool {
         switch (lhs, rhs) {
         case let (.integer(left), .integer(right)):
             return left == right
@@ -56,6 +56,8 @@ extension ConstantNode: Equatable {
             return left == Decimal(right)
         case let (.integer(left), .decimal(right)):
             return Decimal(left) == right
+        case let (.string(left), .string(right)):
+            return left == right
         case (.string(_), _):
             return false
         case (_, .string(_)):
@@ -73,30 +75,6 @@ extension RecipeNode: Equatable {
 extension StepNode: Equatable {
     public static func == (lhs: StepNode, rhs: StepNode) -> Bool {
         return lhs.instructions.map{ ($0.value ) }  == rhs.instructions.map{ ($0.value ) }
-    }
-}
-
-extension ValuesNode: Equatable {
-    public static func == (lhs: ValuesNode, rhs: ValuesNode) -> Bool {
-        for (l, r) in zip(lhs.values, rhs.values) {
-            if l.value != r.value {
-                return false
-            }
-        }
-
-        return true
-    }
-}
-
-extension ValuesNode: Sequence {
-    public func makeIterator() -> IndexingIterator<[ConstantNode]> {
-        return values.makeIterator()
-    }
-}
-
-extension ValuesNode: CustomStringConvertible {
-    public var description: String {
-        return map{ $0.value }.joined(separator: "|")
     }
 }
 
@@ -122,15 +100,15 @@ extension TimerNode: Equatable {
 extension AST {
     var value: String {
         switch self {
-        case let value as ConstantNode:
+        case let v as ValueNode:
 
-            switch value {
-            case let .string(value):
-                return "\(value)"
-            case let .integer(value):
-                return "\(value)"
-            case let .decimal(value):
-                return "\(value.cleanValue)"
+            switch v {
+            case let .string(v):
+                return "\(v)"
+            case let .integer(v):
+                return "\(v)"
+            case let .decimal(v):
+                return "\(v.cleanValue)"
             }
 
         case is RecipeNode:
@@ -146,12 +124,10 @@ extension AST {
         case let equipment as EquipmentNode:
             return "EQ: \(equipment.name)"
         case let timer as TimerNode:
-            return "TIMER(\(timer.name)): \(timer.quantity) \(timer.units)"
-        case let v as ValuesNode:
-            return "\(v)"
+            return "TIMER(\(timer.name)): \(timer.quantity) \(timer.units)"        
         case let amount as AmountNode:
 //            TODO
-            switch amount.quantity.values.first {
+            switch amount.quantity {
             case let .integer(value):
                 return "\(value) \(amount.units.pluralize(value))"
             case let .decimal(value):
@@ -167,7 +143,7 @@ extension AST {
 
     var children: [AST] {
         switch self {
-        case is ConstantNode:
+        case is ValueNode:
             return []
         case is String:
             return []
@@ -180,8 +156,6 @@ extension AST {
         case is IngredientNode:
             return []
         case is TimerNode:
-            return []
-        case is ValuesNode:
             return []
         case is EquipmentNode:
             return []
