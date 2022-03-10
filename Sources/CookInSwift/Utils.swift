@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import i18n
 
 /**
  Generic tree formatting code from https://stackoverflow.com/a/43903427/581164
@@ -142,27 +143,27 @@ func displayAmount(quantity: ValueProtocol, units: String) -> String {
             if units == "" {
                 return "\(value)"
             } else {
-                return "\(value) \(Inflector.shared.pluralize(string: units, count: v))"
+                return "\(value) \(RuntimeSupport.pluralizer.pluralize(string: units, count: v))"
             }
         } else {
             if units == "" {
                 return "\(value.cleanValue)"
             } else {
-                return "\(value.cleanValue) \(Inflector.shared.pluralize(string: units, count: 2))"
+                return "\(value.cleanValue) \(RuntimeSupport.pluralizer.pluralize(string: units, count: 2))"
             }
         }
     case is String:
         if units == "" {
             return "\(quantity)"
         } else {
-            return "\(quantity) \(Inflector.shared.pluralize(string: units, count: 2))"
+            return "\(quantity) \(RuntimeSupport.pluralizer.pluralize(string: units, count: 2))"
         }
 
     case let value as Int:
         if units == "" {
             return "\(value)"
         } else {
-            return "\(value) \(Inflector.shared.pluralize(string: units, count: value))"
+            return "\(value) \(RuntimeSupport.pluralizer.pluralize(string: units, count: value))"
         }
 
     default:

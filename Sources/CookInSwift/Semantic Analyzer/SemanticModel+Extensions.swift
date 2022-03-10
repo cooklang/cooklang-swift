@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import i18n
 
 
 extension Recipe: Equatable {
@@ -116,3 +116,15 @@ extension Ingredient: CustomStringConvertible {
 }
 
 
+extension Recipe {
+    public static func from(text: String) throws -> Recipe {
+        RuntimeSupport.setLemmatizer(EnLemmatizerFactory.create())
+        RuntimeSupport.setPluralizer(EnPluralizerFactory.create())
+
+        let analyzer = SemanticAnalyzer()
+
+        let node = try Parser.parse(text) as! RecipeNode
+
+        return analyzer.analyze(node: node)
+    }
+}

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import i18n
 
 public protocol ValueProtocol {}
 
@@ -45,7 +46,7 @@ public struct IngredientAmountCollection {
 
     mutating func add(_ amount: IngredientAmount) {
         // TODO locale
-        let units = Inflector.shared.singularize(string: amount.units)
+        let units = RuntimeSupport.lemmatizer.lemma(amount.units)
 
         switch amount.quantity.self {
         case let value as Int:

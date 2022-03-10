@@ -9,17 +9,28 @@ let package = Package(
         .library(
             name: "CookInSwift",
             targets: ["CookInSwift"]),
-    ],
-    dependencies: [
-        .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6")
+        .library(
+            name: "ConfigParser",
+            targets: ["ConfigParser"]),
+        .library(
+            name: "i18n",
+            targets: ["i18n"]),
     ],
     targets: [
         .target(
-            name: "CookInSwift",
+            name: "i18n",
             dependencies: []),
+        .target(
+            name: "ConfigParser",
+            dependencies: []),
+        .target(
+            name: "CookInSwift",
+            dependencies: ["ConfigParser", "i18n"]),
         .testTarget(
             name: "CookInSwiftTests",
-            dependencies: ["CookInSwift", "Yams"]
-        ),
+            dependencies: ["CookInSwift"]),
+        .testTarget(
+            name: "ConfigParserTests",
+            dependencies: ["ConfigParser"])
     ]
 )

@@ -7,6 +7,20 @@
 //
 
 import Foundation
+import i18n
+
+public class RuntimeSupport {
+    static var pluralizer: Pluralizer = EnPluralizerFactory.create()
+    static var lemmatizer: Lemmatizer = EnLemmatizerFactory.create()
+
+    static func setPluralizer(_ p: Pluralizer) {
+        pluralizer = p
+    }
+
+    static func setLemmatizer(_ l: Lemmatizer) {
+        lemmatizer = l
+    }
+}
 
 public struct Recipe {
     public var ingredientsTable: IngredientTable = IngredientTable()
@@ -28,15 +42,6 @@ public struct Recipe {
             metadata[item.key] = item.value.description
         }
     }
-
-    public static func from(text: String) throws -> Recipe {
-        let analyzer = SemanticAnalyzer()
-
-        let node = try Parser.parse(text) as! RecipeNode
-
-        return analyzer.analyze(node: node)
-    }
-
 }
 
 public struct Step {
