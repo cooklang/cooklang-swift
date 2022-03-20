@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import i18n
 
 public protocol ValueProtocol {}
 
@@ -14,7 +15,6 @@ extension Int:ValueProtocol {}
 extension Decimal:ValueProtocol {}
 
 public struct IngredientAmount {
-//    TODO remove refs to internal ValuesNode
     public var quantity: ValueProtocol
     public var units: String
 
@@ -45,9 +45,9 @@ public struct IngredientAmountCollection {
     var amountsUncountable: [String: String] = [:]
 
     mutating func add(_ amount: IngredientAmount) {
-        let units = amount.units.singularize
+        // TODO locale
+        let units = RuntimeSupport.lemmatizer.lemma(amount.units)
 
-        // TODO
         switch amount.quantity.self {
         case let value as Int:
             amountsCountable[units] = amountsCountable[units, default: 0] + Decimal(value)

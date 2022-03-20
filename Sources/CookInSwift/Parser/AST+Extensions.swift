@@ -126,16 +126,7 @@ extension AST {
         case let timer as TimerNode:
             return "TIMER(\(timer.name)): \(timer.quantity) \(timer.units)"        
         case let amount as AmountNode:
-//            TODO
-            switch amount.quantity {
-            case let .integer(value):
-                return "\(value) \(amount.units.pluralize(value))"
-            case let .decimal(value):
-                return "\(value) \(amount.units.pluralize(2))"
-            default:
-                return "\(amount.quantity) \(amount.units)"
-            }
-
+            return displayAmount(quantity: amount.quantity.value, units: amount.units)
         default:
             fatalError("Missed AST case \(self)")
         }

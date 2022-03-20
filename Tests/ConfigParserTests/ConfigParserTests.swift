@@ -8,6 +8,7 @@
 import Foundation
 @testable import CookInSwift
 import XCTest
+import ConfigParser
 
 class ConfigParserTests: XCTestCase {
 

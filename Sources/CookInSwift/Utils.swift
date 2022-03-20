@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import i18n
 
 /**
  Generic tree formatting code from https://stackoverflow.com/a/43903427/581164
@@ -130,4 +131,42 @@ func treeString<T>(_ node: T, using nodeInfo: (T) -> (String, T?, T?)) -> String
         + mergedSubLines
 
     return result.joined(separator: "\n")
+}
+
+func displayAmount(quantity: ValueProtocol, units: String) -> String {
+    switch quantity {
+    case let value as Decimal:
+        // TODO locale
+        // when summing up quantities converted to Decimal in IngredientsTable
+        // here we want to check if value can be converted back to integer before representation
+        if let v = Int("\(value)") {
+            if units == "" {
+                return "\(value)"
+            } else {
+                return "\(value) \(RuntimeSupport.pluralizer.pluralize(string: units, count: v))"
+            }
+        } else {
+            if units == "" {
+                return "\(value.cleanValue)"
+            } else {
+                return "\(value.cleanValue) \(RuntimeSupport.pluralizer.pluralize(string: units, count: 2))"
+            }
+        }
+    case is String:
+        if units == "" {
+            return "\(quantity)"
+        } else {
+            return "\(quantity) \(RuntimeSupport.pluralizer.pluralize(string: units, count: 2))"
+        }
+
+    case let value as Int:
+        if units == "" {
+            return "\(value)"
+        } else {
+            return "\(value) \(RuntimeSupport.pluralizer.pluralize(string: units, count: value))"
+        }
+
+    default:
+        return ""
+    }
 }
