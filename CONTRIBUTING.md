@@ -67,7 +67,7 @@ When a pull request is opened CI will run all tests to verify the change.
 
 ### Canonical tests
 
-If your changes of the parser that should be generalized (for other parsers too), consider updating [Canonical tests](https://github.com/cooklang/spec/tree/main/tests).
+If your changes of the parser should be generalized (for other parsers too), consider updating [Canonical tests](https://github.com/cooklang/spec/tree/main/tests).
 
 ### Submitting a Pull Request
 
