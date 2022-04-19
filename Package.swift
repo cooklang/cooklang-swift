@@ -31,6 +31,6 @@ let package = Package(
             dependencies: ["CookInSwift"]),
         .testTarget(
             name: "ConfigParserTests",
-            dependencies: ["ConfigParser"])
+            dependencies: ["ConfigParser", "CookInSwift"])
     ]
 )
