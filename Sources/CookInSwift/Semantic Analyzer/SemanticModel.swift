@@ -82,7 +82,7 @@ public struct Step {
             quantity = value
         }
 
-        let timer = Timer(quantity, timer.units)
+        let timer = Timer(quantity, timer.units, timer.name)
 
         timers.append(timer)
         directions.append(timer)
@@ -132,25 +132,30 @@ public struct Equipment: DirectionItem {
 public struct Timer: DirectionItem {
     public var quantity: ValueProtocol
     public var units: String
+    public var name: String
 
-    init(_ quantity: ValueProtocol, _ units: String) {
+    init(_ quantity: ValueProtocol, _ units: String, _ name: String = "") {
         self.quantity = quantity
         self.units = units
+        self.name = name
     }
 
-    init(_ quantity: Int, _ units: String) {
+    init(_ quantity: Int, _ units: String, _ name: String = "") {
         self.quantity = quantity
         self.units = units
+        self.name = name
     }
 
-    init(_ quantity: String, _ units: String) {
+    init(_ quantity: String, _ units: String, _ name: String = "") {
         self.quantity = quantity
         self.units = units
+        self.name = name
     }
 
-    init(_ quantity: Decimal, _ units: String) {
+    init(_ quantity: Decimal, _ units: String, _ name: String = "") {
         self.quantity = quantity
         self.units = units
+        self.name = name
     }
 }
 
