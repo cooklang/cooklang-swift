@@ -1,5 +1,7 @@
 # cooklang-swift
 
+NOTE! Very first implementation of Cooklang parser, now outdated as we migrated to [Rust](https://github.com/cooklang/cooklang-rs)
+
 This project is an implementation of [Cook Language Spec](https://github.com/cooklang/spec) in Swift language.
 
 ## Key Features
