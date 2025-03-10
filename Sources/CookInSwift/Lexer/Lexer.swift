@@ -43,7 +43,7 @@ class Lexer {
     /**
      Skips all the whitespace
      */
-    private func skipWhitestace() {
+    private func skipWhitespace() {
         while let character = currentCharacter, CharacterSet.whitespaces.contains(character) {
             advance()
         }
